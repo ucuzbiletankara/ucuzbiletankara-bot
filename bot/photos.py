@@ -136,7 +136,7 @@ class PhotoFinder:
                 continue
             artist = re.sub("<[^>]+>", "", (meta.get("Artist") or {}).get("value", "")).strip()
             artist = re.sub(r"^(photo|foto|fotograf|author)\s*:\s*", "", artist, flags=re.I)
-            artist = re.split(r"[\n,;(]", artist)[0].strip()[:28]
+            artist = re.split(r"[\n,;(]| -{2,}| if you", artist, flags=re.I)[0].strip()[:28]
             needs_credit = not re.match(r"^(cc0|public domain|pd)", lic, re.I)
             out.append({"id": f"wm{p['pageid']}", "url": info.get("thumburl") or info.get("url"),
                         "title": p.get("title", ""),
