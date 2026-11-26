@@ -71,7 +71,7 @@ def render_post(content: dict, pick: dict, photos: dict, out_dir: Path, partner:
     for i, slide in enumerate(SLIDES, 1):
         html = tpl.render(slide=slide, c=content, flight=flight, photos=photos,
                           city_size=city_size(flight["city_name"]), partner=partner,
-                          credit=" · ".join(credits.get(slide, [])) or None)
+                          credit=" · ".join(dict.fromkeys(credits.get(slide, []))) or None)
         f = out_dir / f"{i:02d}_{slide}.html"
         f.write_text(html, encoding="utf-8")
         html_files.append(f)

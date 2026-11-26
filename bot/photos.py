@@ -56,7 +56,7 @@ def norm(t: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", t).strip()
 
 
-def relevant(query: str, text: str, city: str, strict: bool) -> bool:
+def relevant(query: str, text: str, city: str, strict: bool, place: bool = True) -> bool:
     """Fotoğraf metni (etiketler/başlık/adres) sorguyla uyumlu mu?
     strict: sorgunun şehir dışındaki ilk özgün kelimesi geçmeli. Her durumda başka şehir adı geçmemeli."""
     q, t, own = norm(query).split(), f" {norm(text)} ", city_names(city)
@@ -64,12 +64,18 @@ def relevant(query: str, text: str, city: str, strict: bool) -> bool:
         if oc not in own and oc not in norm(query) and f" {oc} " in t:
             return False
     key = [w for w in q if len(w) >= 4 and w not in GENERIC and w not in own]
+    city_hit = any(f" {c} " in t for c in own)
     if strict:
         if not key:
-            return any(f" {c} " in t for c in own)
+            # sorgu "şehir + genel kelimeler" ise (ör. "stuttgart christmas market"):
+            # şehir VE en az bir diğer kelime geçmeli
+            others = [w for w in q if len(w) >= 4 and w not in own]
+            return city_hit and (not others or any(f" {w}" in t for w in others))
         w = key[0]
         return f" {w} " in t or f" {w[:6]}" in t
-    return any(f" {w}" in t for w in key + sorted(own))
+    if place:  # gevşek modda bile yer fotoğrafında şehir adı geçmeli
+        return city_hit
+    return any(f" {w}" in t for w in key)
 
 
 OK_LICENSES = re.compile(r"^(cc0|public domain|pd|cc by(-sa)? [\d.]+|cc by(-sa)?)", re.I)
@@ -127,10 +133,12 @@ class PhotoFinder:
             if (info.get("width") or 0) < 1000:
                 continue
             artist = re.sub("<[^>]+>", "", (meta.get("Artist") or {}).get("value", "")).strip()
+            artist = re.sub(r"^(photo|foto|fotograf|author)\s*:\s*", "", artist, flags=re.I)
+            artist = re.split(r"[\n,;(]", artist)[0].strip()[:28]
             needs_credit = not re.match(r"^(cc0|public domain|pd)", lic, re.I)
             out.append({"id": f"wm{p['pageid']}", "url": info.get("thumburl") or info.get("url"),
                         "title": p.get("title", ""),
-                        "credit": f"Foto: {artist[:40] or 'Wikimedia Commons'} / Wikimedia, {lic}" if needs_credit else None})
+                        "credit": f"{artist or 'Wikimedia Commons'} / Wikimedia, {lic}" if needs_credit else None})
         return out
 
     # ------------------------------------------------------------ ortak
@@ -148,7 +156,7 @@ class PhotoFinder:
             if pid in self.used:
                 continue
             text = f"{hit.get('tags', '')} {hit.get('pageURL', '')}"
-            if not relevant(q, text, self.city, strict):
+            if not relevant(q, text, self.city, strict, place=not name.startswith("food")):
                 continue
             self.used.add(pid)
             url = hit.get("largeImageURL") or hit.get("webformatURL")
@@ -158,7 +166,8 @@ class PhotoFinder:
 
     def _try_wikimedia(self, name, q, strict):
         for hit in self._wikimedia(q):
-            if hit["id"] in self.used or not relevant(q, hit["title"], self.city, strict):
+            if hit["id"] in self.used or not relevant(q, hit["title"], self.city, strict,
+                                                      place=not name.startswith("food")):
                 continue
             self.used.add(hit["id"])
             self.log.append(f"{name}: Wikimedia '{q}' → {hit['title']}")

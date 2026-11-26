@@ -26,7 +26,7 @@ def build_caption(content: dict, photos: dict) -> str:
     credits = sorted({p["credit"] for p in photos.values() if p and p.get("credit")})
     parts = [content["caption"].strip()]
     if credits:
-        parts.append("Fotoğraflar: Pixabay · " + " · ".join(credits))
+        parts.append("Fotoğraflar: Pixabay, Wikimedia Commons (" + "; ".join(credits) + ")")
     parts.append(tags)
     return "\n\n".join(p for p in parts if p)
 

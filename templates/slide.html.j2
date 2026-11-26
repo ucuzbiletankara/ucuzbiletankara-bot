@@ -32,7 +32,7 @@ body{margin:0;width:1080px;height:1350px;overflow:hidden;font-family:Inter,sans-
 .notebox b{color:var(--y)}
 .card{background:var(--navy2);border-radius:22px;padding:26px;display:flex;flex-direction:column;gap:8px}
 .tag{flex:0 0 150px;background:var(--y);color:var(--navy);font-weight:700;font-size:20px;text-align:center;padding:8px 0;border-radius:8px}
-.credit{position:absolute;right:20px;bottom:14px;font-size:14px;color:rgba(245,243,238,.75)}
+.credit{position:absolute;left:64px;right:64px;bottom:18px;font-size:13px;line-height:1.35;text-align:right;color:rgba(245,243,238,.7)}
 </style>
 </head>
 <body>
@@ -285,6 +285,6 @@ body{margin:0;width:1080px;height:1350px;overflow:hidden;font-family:Inter,sans-
   <div style="margin-top:auto;font-size:21px;line-height:1.4">Fiyat, paylaşım anında bulunan en düşük fiyattır. Havayolu sitesinde değişebilir.</div>
 </div>
 {% endif %}
-{% if credit %}<div class="credit">{{ credit }}</div>{% endif %}
+{% if credit %}<div class="credit"{% if slide == 'closing' %} style="color:rgba(15,30,51,.7)"{% endif %}>Fotoğraf: {{ credit }}</div>{% endif %}
 </body>
 </html>
