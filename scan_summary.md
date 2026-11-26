@@ -1,0 +1,30 @@
+## Günün fırsatları – 2026-11-26
+
+Fiyat verisi gelen direkt nokta: 42; kurala uymadığı için elenen: 13; değerlendirilen fırsat: 27. API çağrısı: 412.
+
+| # | Rota | Format | Tarih | Fiyat | Normal tek yön | İndirim | Veri | Sezon / tatil | Havayolu | Puan |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | ESB → STR Stuttgart | Tek yön | 22 Ara | **3.075 TL** | 6.548 TL | %48 | 9 | Noel pazarları | SunExpress | 52.7 |
+| 2 | ESB → DXB Dubai | Gidiş-dönüş (3 gece) | 1 Ara → 4 Ara | **9.629 TL** | 7.686 TL | %37 | 42 | Kışın güneşe kaçış | AJet | 52.4 |
+| 3 | ESB → FRA Frankfurt | Tek yön | 23 Ara | **3.140 TL** | 6.565 TL | %47 | 9 | Noel pazarları | SunExpress | 52.0 |
+| 4 | ESB → BER Berlin | Tek yön | 23 Ara | **3.201 TL** | 5.515 TL | %42 | 18 | Noel pazarları | Pegasus | 47.0 |
+| 5 | ESB → VIE Viyana | Tek yön | 20 Ara | **3.255 TL** | 5.386 TL | %40 | 17 | Noel pazarları | AJet | 44.6 |
+| 6 | ESB → CAI Kahire | Tek yön | 10 Şub | **3.268 TL** | 4.299 TL | %24 | 31 | Kışın güneşe kaçış | AJet | 44.0 |
+| 7 | ESB → BCN Barselona | Tek yön | 20 Ara | **3.783 TL** | 5.914 TL | %36 | 16 | Kışın güneşe kaçış | AJet | 41.0 |
+| 8 | ESB → DUS Düsseldorf | Tek yön | 20 Ara | **2.911 TL** | 5.722 TL | %34 | 7 | Noel pazarları | Pegasus | 39.4 |
+| 9 | ESB → AMS Amsterdam | Tek yön | 7 Şub | **3.851 TL** | 12.232 TL | %27 | 4 | – | AJet | 32.4 |
+| 10 | ESB → TBS Tiflis | Gidiş-dönüş (3 gece) | 7 Ara → 10 Ara | **5.929 TL** | 4.276 TL | %31 | 22 | – | AJet | 30.7 |
+| 11 | ESB → GYD Bakü | Tek yön | 25 Şub | **3.073 TL** | 4.089 TL | %25 | 128 | – | AZAL | 29.8 |
+| 12 | ESB → VKO Moskova | Tek yön | 1 Mar | **5.524 TL** | 7.246 TL | %24 | 112 | – | AJet | 28.8 |
+| 13 | ESB → STN Londra | Tek yön | 17 Ara | **3.928 TL** | 6.242 TL | %37 | 18 | – | AJet | 27.1 |
+| 14 | ESB → BUD Budapeşte | Tek yön | 27 Şub | **1.644 TL** | 2.052 TL | %20 | 14 | – | Wizz Air | 24.9 |
+| 15 | ESB → BEG Belgrad | Gidiş-dönüş (3 gece) | 25 Şub → 28 Şub | **9.709 TL** | 6.031 TL | %20 | 28 | – | AJet | 24.5 |
+
+**Bugün paylaşılacak post:** Stuttgart – 3.075 TL
+Not: İki yönü direkt uygun gidiş-dönüş bulunamadı → tek yön; Az veri (9 fiyat): indirim %53 → %48; Vize gerekli, kalkışa 26 gün var
+
+**Kurala uymadığı için elenen direkt noktalar:** ALA Almaty, AMM Amman, AYT Antalya, BJV Bodrum, COV Mersin, DIY Diyarbakir, DLM Dalaman, IST Istanbul, IZM Izmir, NQZ Astana, SZF Samsun, TAS Tashkent, TZX Trabzon
+
+**Önbellekte hiç direkt fiyat bulunamayanlar:** CPH Copenhagen, GVA Geneva, HAM Hamburg, RTM Rotterdam, SJJ Sarajevo, SKP Skopje, STO Stockholm, TIA Tirana, ZRH Zurich
+
+**Fiyat verisi az olduğu için değerlendirilemeyenler:** HAJ Hannover, TGD Podgorica
