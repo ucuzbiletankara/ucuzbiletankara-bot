@@ -57,13 +57,14 @@ def main() -> None:
     try:
         content, usage = generate(pick, api_key, today, model=model,
                                   max_searches=cc.get("max_searches", 4), effort=cc.get("effort", "medium"),
-                                  thinking=cc.get("thinking", "disabled"), esim=bool(esim))
+                                  thinking=cc.get("thinking", "disabled"),
+                                  esim=("link" if esim.get("link_in_bio") else "plain") if esim else False)
     finally:
         (OUT / "claude_raw.json").write_text(
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
 
     content = apply_esim(content, esim)
-    partner = esim["closing_text"] if esim else None
+    partner = (esim.get("closing_text") or None) if esim else None
 
     # 2) Fotoğraflar
     city_en = content.get("city_en") or pick["city_name"]

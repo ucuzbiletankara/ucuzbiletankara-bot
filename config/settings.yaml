@@ -69,21 +69,24 @@ disclosure:
   word: Tanıtım                   # "Reklam" ya da "Tanıtım" (ikisi de yönetmelikte geçerli)
   # Profildeki bilet linki Aviasales (Travelpayouts) satış ortaklığı linki → postlar bu linke yönlendiriyor
   affiliate_bio_link: true
-  # Caption'ın ilk satırı: "Tanıtım · Aviasales · Airalo: <relation_text>." (yoksa ortakların relation'ları birleşir)
-  relation_text: profildeki bilet ve eSIM linkleri satış ortaklığı (komisyon) linkleridir
+  # Caption'ın ilk satırı: "Tanıtım · <ortaklar>: <relation_text>." (yoksa ortakların relation'ları birleşir)
+  relation_text: profildeki bilet linki satış ortaklığı (komisyon) linkidir
   partners:
     - name: Aviasales
       relation: profildeki bilet linki satış ortaklığı (komisyon) linkidir
-    - name: Airalo
-      relation: profildeki eSIM linki satış ortaklığı (komisyon) linkidir
+  # Airalo 27 Kasım'da çıkarıldı: BTK engeli nedeniyle Türkiye'den açılmıyor.
+  # eSIM ortağı eklenince: partners'a ekle, relation_text'i "bilet ve eSIM linkleri ... linkleridir" yap,
+  # esim.link_in_bio: true ve esim.closing_text'i doldur.
   # İleride yeni ortak eklenirse buraya (ör. Hepsiburada) — bildirim otomatik genişler
 
-# Yurtdışı internet notu (Airalo eSIM, profildeki 2. link). Kullanıcı kuralı (26 Kasım):
-# her postta yurtdışı internet için profildeki linkten eSIM alınabileceği belirtilir.
+# Yurtdışı internet notu. Kullanıcı kuralı (26 Kasım): her postta yurtdışı internet için eSIM önerisi.
+# 27 Kasım: Airalo (ve Travelpayouts'taki diğer eSIM markaları) BTK engeli nedeniyle Türkiye'den açılmıyor →
+# Türkiye'den açılan bir ortak bulunana kadar linksiz, markasız öneri.
 esim:
   enabled: true
+  link_in_bio: false               # profilde çalışan bir eSIM ortak linki varsa true
   skip_cities: [ECN]               # KKTC: Türk hatları zaten çalışıyor, eSIM önerisi anlamsız
-  tip: {title: "İnternet: eSIM", text: "Roaming yerine profildeki linkten eSIM al; uçak inince internetin hazır olsun."}
-  caption_line: "📶 Yurtdışı internet: profildeki linkten eSIM alabilirsin, iner inmez bağlan."
-  closing_text: "Yurtdışında internet: Airalo eSIM'ini profildeki linkten al, telefonuna yükle, iner inmez bağlan."
+  tip: {title: "İnternet: eSIM", text: "Roaming yerine eSIM kullan; yola çıkmadan Türkiye'deyken al ve kur."}
+  caption_line: "📶 Yurtdışı internet: yola çıkmadan eSIM'ini Türkiye'deyken al ve kur, iner inmez bağlan."
+  closing_text:                    # ortak varken ör. "Yurtdışında internet: <Marka> eSIM'ini profildeki linkten al..."
 

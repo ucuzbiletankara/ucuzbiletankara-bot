@@ -60,9 +60,16 @@ def _fmt(d: str | None) -> str:
     return f"{x.day} {AYLAR[x.month - 1]} {x.year}"
 
 
-def build_prompt(pick: dict, today: date, esim: bool = False) -> str:
+def build_prompt(pick: dict, today: date, esim: bool | str = False) -> str:
     rt = pick["format"] == "rt"
     mode = pick.get("mode", "firsat")
+    link_note = ('; "profildeki linkten eSIM" alınabileceğini belirt' if esim == "link"
+                 else "; profildeki linkten ya da herhangi bir linkten BAHSETME")
+    esim_rule = ("" if not esim else
+                 "\n12. tips'in SONUNCUSU yurtdışı internet hakkında olsun: başlıkta \"eSIM\" geçsin, metinde roaming yerine\n"
+                 "   eSIM kullanılabileceğini ve yola çıkmadan (Türkiye'deyken) alıp kurmak gerektiğini söyle" + link_note + ".\n"
+                 "   Doğru olduğundan eminsen bu ülkeye özgü kısa bir not ekleyebilirsin, emin değilsen ekleme. Marka adı\n"
+                 "   yazma. Caption'da da kısa bir cümleyle eSIM'i an.")
     visa = pick.get("country") in {"AT", "BE", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IT", "LV",
                                    "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "SK", "SI", "ES", "SE", "CH",
                                    "HR", "BG", "RO", "GB", "IE", "CY"}
@@ -110,10 +117,7 @@ KURALLAR
    (ör. "stuttgart christmas market").
 11. Slayt başlıkları (title) üstteki etiketi tekrar etmesin ("Ne yenir?", "Ulaşım" gibi değil);
    şehre özgü, merak uyandıran kısa başlıklar yaz (ör. "Viyana'nın tadı", "Havalimanından şehre").
-9. closing.subtitle'da "Bilet linki profilde" geçsin.{'''
-12. tips'in SONUNCUSU yurtdışı internet hakkında olsun: başlıkta "eSIM" geçsin, metinde roaming yerine
-   "profildeki linkten eSIM" alınabileceğini söyle; doğru olduğundan eminsen bu ülkeye özgü kısa bir not
-   ekleyebilirsin, emin değilsen ekleme. Marka adı yazma. Caption'da da kısa bir cümleyle profildeki eSIM linkini an.''' if esim else ''}
+9. closing.subtitle'da "Bilet linki profilde" geçsin.{esim_rule}
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
     uçuş özeti (tarih, kalkış ve varış saati (yerel saat), havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
     3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
@@ -276,7 +280,7 @@ def fit_counts(c: dict) -> dict:
 
 def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5-5",
              use_search: bool = True, max_searches: int = 4, effort: str = "medium",
-             thinking: str | None = "disabled", esim: bool = False) -> tuple[dict, dict]:
+             thinking: str | None = "disabled", esim: bool | str = False) -> tuple[dict, dict]:
     """(içerik, kullanım bilgisi) döndürür."""
     global EFFORT, THINKING
     EFFORT, THINKING = effort, thinking
@@ -358,12 +362,13 @@ def apply_esim(content: dict, esim: dict | None) -> dict:
     if not esim:
         return content
     items = content.get("tips", {}).get("items") or []
+    link = bool(esim.get("link_in_bio"))
     has_tip = any("esim" in (it.get("title", "") + it.get("text", "")).lower()
-                  and "profil" in it.get("text", "").lower() for it in items)
+                  and ("profil" in it.get("text", "").lower()) == link for it in items)
     if items and not has_tip:
         items[-1] = dict(esim["tip"])
     cap = content.get("caption", "")
-    if "esim" not in cap.lower() or "profil" not in cap.lower():
+    if "esim" not in cap.lower() or (link and "profil" not in cap.lower()):
         lines = cap.rstrip().splitlines()
         # "Fiyatlar ... değişebilir." satırı en sonda kalsın
         at = next((i for i in range(len(lines) - 1, -1, -1) if lines[i].lower().startswith("fiyat")), len(lines))
