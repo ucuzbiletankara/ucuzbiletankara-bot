@@ -129,22 +129,47 @@ def _post(api_key: str, body: dict) -> dict:
     return r.json()
 
 
+EFFORT = "medium"
+
+PRICES = {  # $ / milyon token: (giriş, çıkış); Haiku 100k üstü istekte pahalı kademe
+    "claude-haiku-5-5": [(100_000, 0.10, 0.50), (10**12, 0.50, 2.50)],
+    "claude-sonnet-5-5": [(10**12, 2.0, 10.0)],
+    "claude-opus-5-5": [(10**12, 4.0, 20.0)],
+}
+
+
+def request_cost(model: str, usage: dict) -> float:
+    inp = usage.get("input_tokens", 0) + usage.get("cache_read_input_tokens", 0) + usage.get("cache_creation_input_tokens", 0)
+    out = usage.get("output_tokens", 0)
+    for limit, pi, po in PRICES.get(model, [(10**12, 2.0, 10.0)]):
+        if inp <= limit:
+            break
+    searches = (usage.get("server_tool_use") or {}).get("web_search_requests", 0)
+    return inp / 1e6 * pi + out / 1e6 * po + searches * 0.01
+
+
 def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches: int) -> dict:
     """Mesaj gönder; web araması uzun sürüp cevap 'pause_turn' ile yarıda kalırsa devam ettir.
     Dönen sözlükte tüm turların içerik blokları birleştirilmiş olarak 'content' alanındadır."""
     messages = [{"role": "user", "content": prompt}]
-    body = {"model": model, "max_tokens": 16000, "messages": messages}
+    body = {"model": model, "max_tokens": 16000, "messages": messages,
+            "output_config": {"effort": EFFORT}}
     if use_search:
         body["tools"] = [{"type": "web_search_20250305", "name": "web_search", "max_uses": max_searches}]
-    all_blocks, usage = [], {}
+    all_blocks, usage, cost = [], {}, 0.0
     for _ in range(6):
         resp = _post(api_key, body)
         LAST_RAW.append(resp)
         blocks = resp.get("content", [])
         all_blocks += blocks
-        for k, v in (resp.get("usage") or {}).items():
+        u = resp.get("usage") or {}
+        cost += request_cost(model, u)  # her istek kendi kademesinden faturalanır
+        for k, v in u.items():
             if isinstance(v, (int, float)):
                 usage[k] = usage.get(k, 0) + v
+        searches = (u.get("server_tool_use") or {}).get("web_search_requests", 0)
+        usage["web_searches"] = usage.get("web_searches", 0) + searches
+        usage["max_prompt_tokens"] = max(usage.get("max_prompt_tokens", 0), u.get("input_tokens", 0))
         stop = resp.get("stop_reason")
         if stop == "pause_turn":
             messages.append({"role": "assistant", "content": blocks})
@@ -152,6 +177,7 @@ def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches:
         if stop == "max_tokens":
             raise RuntimeError("Claude cevabı uzunluk sınırına takıldı (max_tokens).")
         break
+    usage["estimated_cost_usd"] = round(cost, 4)
     return {"content": all_blocks, "usage": usage, "stop_reason": resp.get("stop_reason")}
 
 
@@ -200,9 +226,11 @@ def fit_counts(c: dict) -> dict:
     return c
 
 
-def generate(pick: dict, api_key: str, today: date, model: str = "claude-sonnet-5-5",
-             use_search: bool = True, max_searches: int = 6) -> tuple[dict, dict]:
+def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5-5",
+             use_search: bool = True, max_searches: int = 4, effort: str = "medium") -> tuple[dict, dict]:
     """(içerik, kullanım bilgisi) döndürür."""
+    global EFFORT
+    EFFORT = effort
     prompt = build_prompt(pick, today)
     try:
         resp = _call(api_key, model, prompt, use_search, max_searches)
@@ -221,6 +249,8 @@ def generate(pick: dict, api_key: str, today: date, model: str = "claude-sonnet-
         if problems:
             raise RuntimeError("İçerik şemaya uymuyor: " + "; ".join(problems))
     usage = resp.get("usage", {})
+    usage["estimated_cost_usd"] = round(sum(
+        request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)
     return content, usage
 
 

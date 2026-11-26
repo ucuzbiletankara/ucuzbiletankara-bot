@@ -38,7 +38,8 @@ def main() -> None:
     if not pick:
         raise SystemExit("Tarama sonucunda paylaşılacak uçuş yok.")
     today = datetime.now(TR_TZ).date()
-    model = (s.get("content") or {}).get("model", "claude-sonnet-5-5")
+    cc = s.get("content") or {}
+    model = cc.get("model", "claude-haiku-5-5")
     api_key = config.secret("ANTHROPIC_API_KEY")
 
     if OUT.exists():
@@ -48,7 +49,8 @@ def main() -> None:
     # 1) İçerik
     from . import content as content_mod
     try:
-        content, usage = generate(pick, api_key, today, model=model)
+        content, usage = generate(pick, api_key, today, model=model,
+                                  max_searches=cc.get("max_searches", 4), effort=cc.get("effort", "medium"))
     finally:
         (OUT / "claude_raw.json").write_text(
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -63,6 +65,8 @@ def main() -> None:
     over = overflow_report(OUT)
     if over:
         content = shorten_request(content, over, pick, api_key, model)
+        from .content import request_cost, LAST_RAW
+        usage["estimated_cost_usd"] = round(sum(request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)
         render_post(content, pick, photos, OUT)
         over = overflow_report(OUT)
 
@@ -83,7 +87,10 @@ def main() -> None:
         + (f" → {pick['ret_date']}" if pick.get("ret_date") else " (tek yön)")
         + f" · {pick['airline_name']} · {pick['price']} TL · mod: {pick.get('mode')}",
         f"- Fotoğraf: {found}/{len(photos)} bulundu",
-        f"- Claude kullanımı: {usage}",
+        f"- Claude: model {model} · tahmini maliyet {usage.get('estimated_cost_usd')} $ "
+        f"(aylık ~{round((usage.get('estimated_cost_usd') or 0) * 30, 2)} $) · web araması {usage.get('web_searches')} · "
+        f"en büyük istek {usage.get('max_prompt_tokens')} token",
+        f"- Ham kullanım: {usage}",
         f"- Taşma: {'; '.join(over) if over else 'yok'}",
         "",
         "### Caption",

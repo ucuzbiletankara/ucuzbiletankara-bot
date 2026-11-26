@@ -3,7 +3,9 @@
 currency: try
 
 content:
-  model: claude-sonnet-5-5   # içerik metinlerini yazan Claude modeli
+  model: claude-haiku-5-5    # içerik modeli (Haiku: ucuz; daha yüksek kalite için claude-sonnet-5-5)
+  effort: medium             # low | medium | high — düşük effort Haiku'da aramaları atlatabilir
+  max_searches: 4            # post başına en fazla web araması (~0,01 $/arama)
 
 markets: [tr, ru]          # Travelpayouts veri pazarları; ikisinden gelen fiyatların en ucuzu alınır
 
