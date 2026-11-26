@@ -90,13 +90,17 @@ KURALLAR
    web aramasıyla doğrula; seyahat tarihinde kapanmış ya da başlamamış etkinliği ÖNERME. Etkinlik yoksa
    mevsimin avantajını anlat (ör. sakin sezon, hava, fiyatlar). rows: etkinlik adları + tarih/saat ya da
    o döneme özel 3-5 kısa madde.
-2. Açılış saatleri, tarihler, ulaşım süreleri gibi değişebilen bilgileri web aramasıyla kontrol et. Emin
+2. En fazla 3 web araması yapabilirsin; önceliği etkinlik tarihlerine ver, sonra ulaşım ve açılış saatleri.
+   Açılış saatleri, tarihler, ulaşım süreleri gibi değişebilen bilgileri web aramasıyla kontrol et. Emin
    olamadığın sayıyı yazma; genel ifade kullan. Fiyat (TL/€) yazma, değişir.
 3. Mekân önerileri köklü ve hâlâ açık yerler olsun (gerekirse doğrula).
 4. Domuz eti ve alkol içeren yemeklerde kibarca belirt; food.note bu tür bir hassasiyet ya da pratik bir
    uyarı olsun.
 5. {'Türk vatandaşları için vize gerekir; ipuçlarından biri vize randevusunu erken almak olsun.' if visa else 'Vize durumunu doğrula ve ipuçlarında doğru bilgiyi ver (vizesiz/e-vize/kapıda vize).'}
-6. Dil: sade, samimi, doğal Türkçe. Slaytlarda emoji YOK. Kaynaklardan cümle kopyalama, kendi cümlelerinle yaz.
+6. Dil: sade, samimi, doğal Türkçe; okura "sen" diye hitap et ("kaçırma", "rezervasyon yap"), "siz" ve
+   "-yoruz" (biz) dili KULLANMA. Slaytlarda emoji YOK. Kaynaklardan cümle kopyalama, kendi cümlelerinle yaz.
+   desc/text alanlarını sınıra yakın doldur (sınırın en az %70'i) ve somut bilgi ver: ne var, neden gidilir,
+   pratik bir detay (saat, kapalı gün, en iyi zaman, yakınındaki yer). "Güzel bir yer" gibi boş ifadeler yazma.
 7. Karakter sınırları tasarım için zorunlu; aşma. Öğe sayıları: why_now.rows 3-5, sights 4+4, food 4,
    eat 4, stay 4, transport.cards 3 (havalimanından şehre seçenekler), transport.city_items 2, tips 6.
 8. photo_query'ler İngilizce, kısa (2-4 kelime) ve somut olsun; İLK KELİME öznenin kendi adı olsun
@@ -217,6 +221,27 @@ def validate(c: dict) -> list[str]:
     return problems
 
 
+KICKER_TITLES = {
+    "why_now": ("neden şimdi", "{city} şimdi güzel"),
+    "sights_1": ("gezilecek yerler", "{city} turu"),
+    "sights_2": ("gezilecek yerler", "Biraz daha {city}"),
+    "food": ("ne yenir", "{city} lezzetleri"),
+    "eat": ("nerede yenir", "Masaya otur"),
+    "stay": ("nerede kalınır", "Hangi semtte kalmalı?"),
+    "transport": ("ulaşım", "Havalimanından şehre"),
+    "tips": ("ipuçları", "Gitmeden önce"),
+}
+
+
+def fix_titles(c: dict, city: str) -> dict:
+    """Başlık üstteki etiketi tekrar ediyorsa şehre özgü yedek başlık koy."""
+    for sec, (kicker, fallback) in KICKER_TITLES.items():
+        t = (c.get(sec) or {}).get("title", "")
+        if not t or kicker in t.lower().replace("?", "").replace("i̇", "i"):
+            c.setdefault(sec, {})["title"] = fallback.format(city=city)
+    return c
+
+
 def fit_counts(c: dict) -> dict:
     """Fazla öğeleri kırp (eksikler validate'te yakalanır)."""
     for path, (_, hi) in COUNTS.items():
@@ -252,6 +277,7 @@ def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5
         problems = validate(content)
         if problems:
             raise RuntimeError("İçerik şemaya uymuyor: " + "; ".join(problems))
+    content = fix_titles(content, pick["city_name"])
     usage = resp.get("usage", {})
     usage["estimated_cost_usd"] = round(sum(
         request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)

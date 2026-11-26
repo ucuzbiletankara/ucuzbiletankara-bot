@@ -74,7 +74,8 @@ def relevant(query: str, text: str, city: str, strict: bool, place: bool = True)
             others = [w for w in q if len(w) >= 4 and w not in own]
             return city_hit and (not others or any(f" {w}" in t for w in others))
         w = key[0]
-        return f" {w} " in t or f" {w[:6]}" in t
+        hit = f" {w} " in t or f" {w[:6]}" in t
+        return hit and (city_hit or not place)
     if place:  # gevşek modda bile yer fotoğrafında şehir adı geçmeli
         return city_hit
     return any(f" {w}" in t for w in key)
