@@ -23,7 +23,9 @@ GENERIC = {"city", "photo", "plate", "dish", "food", "building", "interior", "ex
            "street", "streets", "old", "town", "lights", "light", "view", "christmas", "market", "train",
            "platform", "station", "museum", "church", "palace", "square", "park", "river", "bridge", "tower",
            "with", "and", "the", "from", "courtyard", "atrium", "winter", "summer", "traditional", "local",
-           "cafe", "coffee", "house", "restaurant", "hotel", "beach", "sunset", "panorama", "skyline", "aerial"}
+           "cafe", "coffee", "house", "restaurant", "hotel", "beach", "sunset", "panorama", "skyline", "aerial",
+           "bahn", "sbahn", "ubahn", "tram", "metro", "subway", "airport", "terminal", "hauptbahnhof", "central",
+           "railway", "rail", "taxi", "public", "transport", "transit", "express", "line"}
 OTHER_CITIES = {"berlin", "london", "paris", "vienna", "wien", "munich", "munchen", "frankfurt", "hamburg",
                 "cologne", "koln", "rome", "roma", "prague", "praha", "budapest", "amsterdam", "barcelona",
                 "madrid", "lisbon", "lisboa", "istanbul", "dubai", "new york", "moscow", "warsaw", "krakow",
