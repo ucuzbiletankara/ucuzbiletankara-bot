@@ -58,3 +58,18 @@ airlines:
 publish:
   enabled: false             # true olunca günlük iş akışı Instagram'a gerçekten paylaşır
   ig_user_id: "17841480123113951"   # @ucuzbiletankara Instagram hesap kimliği (gizli değil)
+
+# Reklam/tanıtım bildirimi — Ticari Reklam ve Haksız Ticari Uygulamalar Yönetmeliği m.23/A (1 Ağustos 2026)
+# Menfaat ilişkisi (ücret, ürün, indirim, komisyon/affiliate, davet, sponsorluk) olan her post:
+#   - caption'ın İLK satırı "Tanıtım" + reklam veren adı
+#   - kapakta okunur "Tanıtım · <marka>" etiketi
+#   - hashtag'lerde #reklam
+# Menfaat ilişkisi OLMAYAN marka anmalarında (havayolu, restoran...) etiket KULLANILMAZ.
+disclosure:
+  word: Tanıtım                   # "Reklam" ya da "Tanıtım" (ikisi de yönetmelikte geçerli)
+  # Profildeki bilet linki Aviasales (Travelpayouts) satış ortaklığı linki → postlar bu linke yönlendiriyor
+  affiliate_bio_link: true
+  partners:
+    - name: Aviasales
+      relation: profildeki bilet linki satış ortaklığı (komisyon) linkidir
+  # İleride iş birliği eklenirse buraya: - name: Airalo / relation: eSIM iş birliği

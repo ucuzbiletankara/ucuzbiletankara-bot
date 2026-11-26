@@ -56,9 +56,12 @@ body{margin:0;width:1080px;height:1350px;overflow:hidden;font-family:Inter,sans-
   {% endif %}
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,30,51,.55) 0%,rgba(15,30,51,0) 18%,rgba(15,30,51,0) 30%,rgba(15,30,51,.88) 58%,rgba(15,30,51,.96) 100%)"></div>
   <div style="position:absolute;inset:0;padding:64px 64px 72px;display:flex;flex-direction:column;justify-content:space-between">
-    <div class="top">
-      <div class="brand" style="font-size:36px">ucuzbilet<span>ankara</span></div>
-      <div class="count" style="color:var(--cream);background:var(--navy);padding:8px 18px;border-radius:999px">01 / 10</div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="top">
+        <div class="brand" style="font-size:36px">ucuzbilet<span>ankara</span></div>
+        <div class="count" style="color:var(--cream);background:var(--navy);padding:8px 18px;border-radius:999px">01 / 10</div>
+      </div>
+      {% if c.disclosure_badge %}<div style="align-self:flex-start;background:var(--cream);color:var(--navy);font-size:24px;font-weight:700;padding:8px 16px;border-radius:8px">{{ c.disclosure_badge }}</div>{% endif %}
     </div>
     <div style="display:flex;flex-direction:column;gap:28px">
       <div style="display:flex;flex-direction:column;gap:4px">
@@ -283,7 +286,7 @@ body{margin:0;width:1080px;height:1350px;overflow:hidden;font-family:Inter,sans-
   {% if partner %}
   <div style="border:3px solid var(--navy);border-radius:22px;padding:24px 30px;font-size:25px;line-height:1.4">{{ partner }}</div>
   {% endif %}
-  <div style="margin-top:auto;font-size:21px;line-height:1.4">Fiyat, paylaşım anında bulunan en düşük fiyattır. Havayolu sitesinde değişebilir.</div>
+  <div style="margin-top:auto;font-size:21px;line-height:1.4">Fiyat, paylaşım anında bulunan en düşük fiyattır. Havayolu sitesinde değişebilir.{% if c.disclosure_badge %} {{ c.disclosure_badge }}: profildeki bilet linki satış ortaklığı linkidir.{% endif %}</div>
 </div>
 {% endif %}
 {% if credit %}<div class="credit"{% if slide == 'closing' %} style="color:rgba(15,30,51,.7)"{% endif %}>Fotoğraf: {{ credit }}</div>{% endif %}

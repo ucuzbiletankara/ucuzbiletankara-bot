@@ -115,6 +115,8 @@ KURALLAR
     3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
     son satırda: "Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir." Hashtag'leri caption'a
     yazma, ayrı listede ver (Türkçe ve İngilizce karışık, şehir + ankara + seyahat temalı).
+    #reklam, #işbirliği, #sponsor gibi reklam etiketlerini ve "reklam/tanıtım" bildirimini SEN EKLEME;
+    gerekiyorsa sistem kurala uygun biçimde ekliyor. Caption'ın ilk satırı rota + fiyat olsun.
 
 ÇIKTI: Araştırmanı bitirdikten sonra SADECE aşağıdaki şemaya uyan geçerli JSON'u <json> ve </json> etiketleri
 arasında ver. JSON'u girintisiz, tek satır (minified) yaz; araştırma sırasında uzun açıklama yazma. Şema (değerler açıklamadır, gerçek içerikle doldur):
@@ -306,3 +308,32 @@ def shorten_request(content: dict, overflow: list[str], pick: dict, api_key: str
     )
     resp = _call(api_key, model, prompt, False, 0)
     return fit_counts(_extract_json(resp))
+
+
+# ---------------------------------------------------------------- reklam/tanıtım bildirimi (Yönetmelik m.23/A)
+
+AD_TAGS = {"reklam", "tanıtım", "tanitim", "reklamtanıtım", "sponsor", "sponsorlu", "işbirliği", "isbirligi",
+           "işbirligi", "ortaklık", "ortaklik", "ad", "sponsored", "ücretliişbirliği"}
+
+
+def disclosure_for(settings: dict) -> dict | None:
+    """Bu post için bildirim gerekiyor mu? Gerekiyorsa {"line", "badge", "brands"} döndürür."""
+    d = settings.get("disclosure") or {}
+    partners = [p for p in d.get("partners") or [] if p.get("name")]
+    if not (d.get("affiliate_bio_link") or partners) or not partners:
+        return None
+    word = d.get("word", "Tanıtım")
+    brands = " · ".join(p["name"] for p in partners)
+    rel = "; ".join(p.get("relation", "") for p in partners if p.get("relation"))
+    line = f"{word} · {brands}: {rel}." if rel else f"{word} · {brands}"
+    return {"word": word, "brands": brands, "line": line, "badge": f"{word} · {brands}"}
+
+
+def clean_ad_tags(tags: list[str]) -> list[str]:
+    """Claude'un kendiliğinden eklediği reklam/işbirliği etiketlerini sil (ilişki yoksa yanıltıcı olur)."""
+    out = []
+    for t in tags:
+        k = t.lstrip("#").lower().replace(" ", "").replace("/", "")
+        if k not in AD_TAGS:
+            out.append(t)
+    return out

@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
-from .content import generate, shorten_request
+from .content import clean_ad_tags, disclosure_for, generate, shorten_request
 from .photos import PhotoFinder, collect
 from .render import render_post, overflow_report
 
@@ -21,10 +21,15 @@ OUT = config.ROOT / "output" / "post"
 TR_TZ = timezone(timedelta(hours=3))
 
 
-def build_caption(content: dict, photos: dict) -> str:
-    tags = " ".join("#" + t.lstrip("#").replace(" ", "") for t in content.get("hashtags", [])[:15])
+def build_caption(content: dict, photos: dict, disclosure: dict | None) -> str:
+    tags = clean_ad_tags(content.get("hashtags", []))[:15]
+    if disclosure:
+        tags = ["reklam"] + tags
+    tags = " ".join("#" + t.lstrip("#").replace(" ", "") for t in tags)
     credits = sorted({p["credit"] for p in photos.values() if p and p.get("credit")})
-    parts = [content["caption"].strip()]
+    body = "\n".join(l for l in content["caption"].strip().splitlines()
+                     if l.strip().lower() not in {"#reklam", "#işbirliği", "#tanıtım"})
+    parts = ([disclosure["line"]] if disclosure else []) + [body]
     if credits:
         parts.append("Fotoğraflar: Pixabay, Wikimedia Commons (" + "; ".join(credits) + ")")
     parts.append(tags)
@@ -62,6 +67,8 @@ def main() -> None:
     photos = collect(content, city_en, finder)
 
     # 3) Render + taşma kontrolü (taşarsa bir kez kısaltma iste)
+    disclosure = disclosure_for(s)
+    content["disclosure_badge"] = disclosure["badge"] if disclosure else None
     render_post(content, pick, photos, OUT)
     over = overflow_report(OUT)
     if over:
@@ -71,10 +78,10 @@ def main() -> None:
         render_post(content, pick, photos, OUT)
         over = overflow_report(OUT)
 
-    caption = build_caption(content, photos)
+    caption = build_caption(content, photos, disclosure)
     (OUT / "caption.txt").write_text(caption, encoding="utf-8")
     (OUT / "post.json").write_text(json.dumps(
-        {"pick": pick, "content": content, "photos": photos, "usage": usage,
+        {"pick": pick, "content": content, "photos": photos, "usage": usage, "disclosure": disclosure,
          "generated_at": datetime.now(TR_TZ).isoformat(timespec="minutes")},
         ensure_ascii=False, indent=2), encoding="utf-8")
     for f in OUT.glob("*.html"):
@@ -93,6 +100,7 @@ def main() -> None:
         f"en büyük istek {usage.get('max_prompt_tokens')} token",
         f"- Ham kullanım: {usage}",
         f"- Taşma: {'; '.join(over) if over else 'yok'}",
+        f"- Reklam/tanıtım bildirimi: {disclosure['line'] if disclosure else 'gerekmiyor (menfaat ilişkisi yok)'}",
         "",
         "### Caption",
         "```",

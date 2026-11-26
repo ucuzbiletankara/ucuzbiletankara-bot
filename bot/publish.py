@@ -183,6 +183,16 @@ def record_history(pick: dict, result: dict) -> None:
     p.write_text(json.dumps(hist, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
+def check_disclosure(caption: str, disclosure: dict | None) -> None:
+    """Yönetmelik m.23/A: bildirim gereken postta "Reklam/Tanıtım" + marka İLK satırda olmalı."""
+    if not disclosure:
+        return
+    first = caption.strip().splitlines()[0] if caption.strip() else ""
+    word = disclosure.get("word", "Tanıtım").lower()
+    if word not in first.lower() or disclosure["brands"].split(" · ")[0].lower() not in first.lower():
+        raise IGError("Reklam/tanıtım bildirimi caption'ın ilk satırında değil; post paylaşılmadı.")
+
+
 # ---------------------------------------------------------------- giriş noktası
 
 def summary(md: str) -> None:
@@ -227,6 +237,7 @@ def main() -> None:
 
     post = json.loads((POST_DIR / "post.json").read_text(encoding="utf-8"))
     caption = trim_caption((POST_DIR / "caption.txt").read_text(encoding="utf-8"))
+    check_disclosure(caption, post.get("disclosure"))
     ig = Instagram(config.secret("IG_ACCESS_TOKEN"), str(s["ig_user_id"]))
     ig.detect_host()
     day = datetime.now(TR_TZ).strftime("%Y-%m-%d-%H%M")
