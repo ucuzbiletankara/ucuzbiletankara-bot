@@ -46,7 +46,12 @@ def main() -> None:
     OUT.mkdir(parents=True)
 
     # 1) İçerik
-    content, usage = generate(pick, api_key, today, model=model)
+    from . import content as content_mod
+    try:
+        content, usage = generate(pick, api_key, today, model=model)
+    finally:
+        (OUT / "claude_raw.json").write_text(
+            json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 2) Fotoğraflar
     finder = PhotoFinder(config.secret("PIXABAY_API_KEY"), OUT)

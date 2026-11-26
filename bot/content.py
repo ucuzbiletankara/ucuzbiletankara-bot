@@ -114,11 +114,10 @@ arasında ver. Şema (değerler açıklamadır, gerçek içerikle doldur):
 """
 
 
-def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches: int) -> dict:
-    body = {"model": model, "max_tokens": 8000,
-            "messages": [{"role": "user", "content": prompt}]}
-    if use_search:
-        body["tools"] = [{"type": "web_search_20250305", "name": "web_search", "max_uses": max_searches}]
+LAST_RAW: list[dict] = []  # hata ayıklama için son ham cevaplar
+
+
+def _post(api_key: str, body: dict) -> dict:
     r = requests.post(API, json=body, timeout=600, headers={
         "x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"})
     if r.status_code >= 400:
@@ -126,10 +125,39 @@ def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches:
     return r.json()
 
 
+def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches: int) -> dict:
+    """Mesaj gönder; web araması uzun sürüp cevap 'pause_turn' ile yarıda kalırsa devam ettir.
+    Dönen sözlükte tüm turların içerik blokları birleştirilmiş olarak 'content' alanındadır."""
+    messages = [{"role": "user", "content": prompt}]
+    body = {"model": model, "max_tokens": 16000, "messages": messages}
+    if use_search:
+        body["tools"] = [{"type": "web_search_20250305", "name": "web_search", "max_uses": max_searches}]
+    all_blocks, usage = [], {}
+    for _ in range(6):
+        resp = _post(api_key, body)
+        LAST_RAW.append(resp)
+        blocks = resp.get("content", [])
+        all_blocks += blocks
+        for k, v in (resp.get("usage") or {}).items():
+            if isinstance(v, (int, float)):
+                usage[k] = usage.get(k, 0) + v
+        stop = resp.get("stop_reason")
+        if stop == "pause_turn":
+            messages.append({"role": "assistant", "content": blocks})
+            continue
+        if stop == "max_tokens":
+            raise RuntimeError("Claude cevabı uzunluk sınırına takıldı (max_tokens).")
+        break
+    return {"content": all_blocks, "usage": usage, "stop_reason": resp.get("stop_reason")}
+
+
 def _extract_json(resp: dict) -> dict:
     text = "".join(b.get("text", "") for b in resp.get("content", []) if b.get("type") == "text")
     m = re.search(r"<json>\s*(\{.*\})\s*</json>", text, re.S)
     raw = m.group(1) if m else text[text.find("{"): text.rfind("}") + 1]
+    if not raw.strip():
+        raise ValueError(f"Cevapta JSON bulunamadı (stop_reason={resp.get('stop_reason')}). "
+                         f"Metin başı: {text[:300]!r}")
     return json.loads(raw)
 
 
