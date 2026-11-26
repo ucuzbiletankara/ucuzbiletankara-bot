@@ -19,12 +19,66 @@ from .config import ROOT
 
 CACHE = ROOT / ".cache" / "pixabay"
 UA = "ucuzbiletankara-bot/1.0 (https://github.com/ucuzbiletankara/ucuzbiletankara-bot)"
+GENERIC = {"city", "photo", "plate", "dish", "food", "building", "interior", "exterior", "evening", "night",
+           "street", "streets", "old", "town", "lights", "light", "view", "christmas", "market", "train",
+           "platform", "station", "museum", "church", "palace", "square", "park", "river", "bridge", "tower",
+           "with", "and", "the", "from", "courtyard", "atrium", "winter", "summer", "traditional", "local",
+           "cafe", "coffee", "house", "restaurant", "hotel", "beach", "sunset", "panorama", "skyline", "aerial"}
+OTHER_CITIES = {"berlin", "london", "paris", "vienna", "wien", "munich", "munchen", "frankfurt", "hamburg",
+                "cologne", "koln", "rome", "roma", "prague", "praha", "budapest", "amsterdam", "barcelona",
+                "madrid", "lisbon", "lisboa", "istanbul", "dubai", "new york", "moscow", "warsaw", "krakow",
+                "zurich", "geneva", "brussels", "copenhagen", "stockholm", "oslo", "venice", "milan", "florence",
+                "dresden", "nuremberg", "salzburg", "stuttgart", "dusseldorf", "leipzig", "bremen", "hannover",
+                "edinburgh", "dublin", "athens", "baku", "tbilisi", "cairo", "belgrade", "sarajevo", "tirana",
+                "bucharest", "sofia", "riga", "tallinn", "vilnius", "helsinki", "seville", "valencia", "porto",
+                "nice", "lyon", "marseille", "strasbourg", "basel", "bern", "innsbruck", "graz", "bratislava"}
+
+
+ALIASES = [{"vienna", "wien"}, {"munich", "munchen"}, {"cologne", "koln"}, {"prague", "praha"},
+           {"lisbon", "lisboa"}, {"rome", "roma"}, {"nuremberg", "nurnberg"}, {"warsaw", "warszawa"},
+           {"krakow", "cracow"}, {"copenhagen", "kobenhavn"}, {"brussels", "bruxelles", "brussel"},
+           {"geneva", "geneve", "genf"}, {"zurich", "zuerich"}, {"belgrade", "beograd"}, {"bucharest", "bucuresti"}]
+
+
+def city_names(city: str) -> set[str]:
+    c = norm(city)
+    for group in ALIASES:
+        if c in group:
+            return set(group)
+    return {c}
+
+
+def norm(t: str) -> str:
+    t = t.lower()
+    for a, b in (("ä", "a"), ("ö", "o"), ("ü", "u"), ("ß", "ss"), ("é", "e"), ("è", "e"), ("á", "a"),
+                 ("ç", "c"), ("ş", "s"), ("ğ", "g"), ("ı", "i"), ("ø", "o"), ("å", "a"), ("ñ", "n")):
+        t = t.replace(a, b)
+    return re.sub(r"[^a-z0-9]+", " ", t).strip()
+
+
+def relevant(query: str, text: str, city: str, strict: bool) -> bool:
+    """Fotoğraf metni (etiketler/başlık/adres) sorguyla uyumlu mu?
+    strict: sorgunun şehir dışındaki ilk özgün kelimesi geçmeli. Her durumda başka şehir adı geçmemeli."""
+    q, t, own = norm(query).split(), f" {norm(text)} ", city_names(city)
+    for oc in OTHER_CITIES:
+        if oc not in own and oc not in norm(query) and f" {oc} " in t:
+            return False
+    key = [w for w in q if len(w) >= 4 and w not in GENERIC and w not in own]
+    if strict:
+        if not key:
+            return any(f" {c} " in t for c in own)
+        w = key[0]
+        return f" {w} " in t or f" {w[:6]}" in t
+    return any(f" {w}" in t for w in key + sorted(own))
+
+
 OK_LICENSES = re.compile(r"^(cc0|public domain|pd|cc by(-sa)? [\d.]+|cc by(-sa)?)", re.I)
 
 
 class PhotoFinder:
-    def __init__(self, pixabay_key: str | None, out_dir: Path):
+    def __init__(self, pixabay_key: str | None, out_dir: Path, city: str = ""):
         self.key = pixabay_key
+        self.city = city
         self.out = Path(out_dir)
         self.out.mkdir(parents=True, exist_ok=True)
         self.used: set[str] = set()
@@ -75,6 +129,7 @@ class PhotoFinder:
             artist = re.sub("<[^>]+>", "", (meta.get("Artist") or {}).get("value", "")).strip()
             needs_credit = not re.match(r"^(cc0|public domain|pd)", lic, re.I)
             out.append({"id": f"wm{p['pageid']}", "url": info.get("thumburl") or info.get("url"),
+                        "title": p.get("title", ""),
                         "credit": f"Foto: {artist[:40] or 'Wikimedia Commons'} / Wikimedia, {lic}" if needs_credit else None})
         return out
 
@@ -87,30 +142,50 @@ class PhotoFinder:
         (self.out / fname).write_bytes(r.content)
         return fname
 
+    def _try_pixabay(self, name, q, orientation, strict):
+        for hit in self._pixabay(q, orientation):
+            pid = f"px{hit['id']}"
+            if pid in self.used:
+                continue
+            text = f"{hit.get('tags', '')} {hit.get('pageURL', '')}"
+            if not relevant(q, text, self.city, strict):
+                continue
+            self.used.add(pid)
+            url = hit.get("largeImageURL") or hit.get("webformatURL")
+            self.log.append(f"{name}: Pixabay{'' if strict else ' (gevşek)'} '{q}' → {hit.get('pageURL')}")
+            return {"file": self._download(url, name), "credit": None, "source": hit.get("pageURL")}
+        return None
+
+    def _try_wikimedia(self, name, q, strict):
+        for hit in self._wikimedia(q):
+            if hit["id"] in self.used or not relevant(q, hit["title"], self.city, strict):
+                continue
+            self.used.add(hit["id"])
+            self.log.append(f"{name}: Wikimedia '{q}' → {hit['title']}")
+            return {"file": self._download(hit["url"], name), "credit": hit["credit"], "source": hit["url"]}
+        return None
+
     def find(self, name: str, queries: list[str], orientation: str = "horizontal") -> dict | None:
-        """queries sırayla denenir. Daha önce kullanılan fotoğraf tekrar seçilmez."""
-        for q in [q for q in queries if q]:
-            try:
-                for hit in self._pixabay(q, orientation):
-                    pid = f"px{hit['id']}"
-                    if pid in self.used:
-                        continue
-                    self.used.add(pid)
-                    url = hit.get("largeImageURL") or hit.get("webformatURL")
-                    self.log.append(f"{name}: Pixabay '{q}' → {hit.get('pageURL')}")
-                    return {"file": self._download(url, name), "credit": None, "source": hit.get("pageURL")}
-            except Exception as e:  # noqa: BLE001
-                self.log.append(f"{name}: Pixabay hata '{q}': {e}")
-            try:
-                for hit in self._wikimedia(q):
-                    if hit["id"] in self.used:
-                        continue
-                    self.used.add(hit["id"])
-                    self.log.append(f"{name}: Wikimedia '{q}' → {hit['url']}")
-                    return {"file": self._download(hit["url"], name), "credit": hit["credit"], "source": hit["url"]}
-            except Exception as e:  # noqa: BLE001
-                self.log.append(f"{name}: Wikimedia hata '{q}': {e}")
-        self.log.append(f"{name}: fotoğraf bulunamadı {queries}")
+        """Önce sıkı eşleşme (Pixabay → Wikimedia), sonra gevşek eşleşme (Pixabay).
+        Daha önce kullanılan fotoğraf tekrar seçilmez."""
+        queries = [q for q in queries if q]
+        for strict in (True, False):
+            for q in queries:
+                try:
+                    got = self._try_pixabay(name, q, orientation, strict)
+                    if got:
+                        return got
+                except Exception as e:  # noqa: BLE001
+                    self.log.append(f"{name}: Pixabay hata '{q}': {e}")
+                if not strict:
+                    continue
+                try:
+                    got = self._try_wikimedia(name, q, strict)
+                    if got:
+                        return got
+                except Exception as e:  # noqa: BLE001
+                    self.log.append(f"{name}: Wikimedia hata '{q}': {e}")
+        self.log.append(f"{name}: uygun fotoğraf bulunamadı {queries}")
         return None
 
 

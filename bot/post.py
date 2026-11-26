@@ -54,8 +54,9 @@ def main() -> None:
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
 
     # 2) Fotoğraflar
-    finder = PhotoFinder(config.secret("PIXABAY_API_KEY"), OUT)
-    photos = collect(content, content.get("city_en") or pick["city_name"], finder)
+    city_en = content.get("city_en") or pick["city_name"]
+    finder = PhotoFinder(config.secret("PIXABAY_API_KEY"), OUT, city=city_en)
+    photos = collect(content, city_en, finder)
 
     # 3) Render + taşma kontrolü (taşarsa bir kez kısaltma iste)
     render_post(content, pick, photos, OUT)

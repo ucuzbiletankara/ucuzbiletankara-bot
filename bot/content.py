@@ -99,8 +99,12 @@ KURALLAR
 6. Dil: sade, samimi, doğal Türkçe. Slaytlarda emoji YOK. Kaynaklardan cümle kopyalama, kendi cümlelerinle yaz.
 7. Karakter sınırları tasarım için zorunlu; aşma. Öğe sayıları: why_now.rows 3-5, sights 4+4, food 4,
    eat 4, stay 4, transport.cards 3 (havalimanından şehre seçenekler), transport.city_items 2, tips 6.
-8. photo_query'ler İngilizce ve somut olsun (ör. "stephansdom vienna", "wiener schnitzel plate"); aynı
-   sorguyu iki kez kullanma. Kapak sorgusu şehri ve sezonu en iyi anlatan dikey bir fotoğraf için.
+8. photo_query'ler İngilizce, kısa (2-4 kelime) ve somut olsun; İLK KELİME öznenin kendi adı olsun
+   (ör. "stephansdom vienna", "maultaschen", "markthalle stuttgart"). Yemeklerde sadece yemeğin adı yeterli.
+   Aynı sorguyu iki kez kullanma. Kapak sorgusu şehri ve sezonu anlatan dikey bir fotoğraf için
+   (ör. "stuttgart christmas market").
+11. Slayt başlıkları (title) üstteki etiketi tekrar etmesin ("Ne yenir?", "Ulaşım" gibi değil);
+   şehre özgü, merak uyandıran kısa başlıklar yaz (ör. "Viyana'nın tadı", "Havalimanından şehre").
 9. closing.subtitle'da "Bilet linki profilde" geçsin.
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
     uçuş özeti (tarih, havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
