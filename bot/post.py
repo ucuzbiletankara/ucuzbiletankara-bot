@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
-from .content import clean_ad_tags, disclosure_for, generate, shorten_request
+from .content import apply_esim, clean_ad_tags, disclosure_for, esim_for, generate, shorten_request
 from .photos import PhotoFinder, collect
 from .render import render_post, overflow_report
 
@@ -52,14 +52,18 @@ def main() -> None:
     OUT.mkdir(parents=True)
 
     # 1) İçerik
+    esim = esim_for(s, pick)
     from . import content as content_mod
     try:
         content, usage = generate(pick, api_key, today, model=model,
                                   max_searches=cc.get("max_searches", 4), effort=cc.get("effort", "medium"),
-                                  thinking=cc.get("thinking", "disabled"))
+                                  thinking=cc.get("thinking", "disabled"), esim=bool(esim))
     finally:
         (OUT / "claude_raw.json").write_text(
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
+
+    content = apply_esim(content, esim)
+    partner = esim["closing_text"] if esim else None
 
     # 2) Fotoğraflar
     city_en = content.get("city_en") or pick["city_name"]
@@ -69,13 +73,13 @@ def main() -> None:
     # 3) Render + taşma kontrolü (taşarsa bir kez kısaltma iste)
     disclosure = disclosure_for(s)
     content["disclosure_badge"] = disclosure["badge"] if disclosure else None
-    render_post(content, pick, photos, OUT)
+    render_post(content, pick, photos, OUT, partner=partner)
     over = overflow_report(OUT)
     if over:
-        content = shorten_request(content, over, pick, api_key, model)
+        content = apply_esim(shorten_request(content, over, pick, api_key, model), esim)
         from .content import request_cost, LAST_RAW
         usage["estimated_cost_usd"] = round(sum(request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)
-        render_post(content, pick, photos, OUT)
+        render_post(content, pick, photos, OUT, partner=partner)
         over = overflow_report(OUT)
 
     caption = build_caption(content, photos, disclosure)
@@ -100,6 +104,7 @@ def main() -> None:
         f"en büyük istek {usage.get('max_prompt_tokens')} token",
         f"- Ham kullanım: {usage}",
         f"- Taşma: {'; '.join(over) if over else 'yok'}",
+        f"- eSIM notu: {'var' if esim else 'yok'}",
         f"- Reklam/tanıtım bildirimi: {disclosure['line'] if disclosure else 'gerekmiyor (menfaat ilişkisi yok)'}",
         "",
         "### Caption",

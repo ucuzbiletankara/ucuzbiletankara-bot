@@ -69,7 +69,21 @@ disclosure:
   word: Tanıtım                   # "Reklam" ya da "Tanıtım" (ikisi de yönetmelikte geçerli)
   # Profildeki bilet linki Aviasales (Travelpayouts) satış ortaklığı linki → postlar bu linke yönlendiriyor
   affiliate_bio_link: true
+  # Caption'ın ilk satırı: "Tanıtım · Aviasales · Airalo: <relation_text>." (yoksa ortakların relation'ları birleşir)
+  relation_text: profildeki bilet ve eSIM linkleri satış ortaklığı (komisyon) linkleridir
   partners:
     - name: Aviasales
       relation: profildeki bilet linki satış ortaklığı (komisyon) linkidir
-  # İleride iş birliği eklenirse buraya: - name: Airalo / relation: eSIM iş birliği
+    - name: Airalo
+      relation: profildeki eSIM linki satış ortaklığı (komisyon) linkidir
+  # İleride yeni ortak eklenirse buraya (ör. Hepsiburada) — bildirim otomatik genişler
+
+# Yurtdışı internet notu (Airalo eSIM, profildeki 2. link). Kullanıcı kuralı (26 Kasım):
+# her postta yurtdışı internet için profildeki linkten eSIM alınabileceği belirtilir.
+esim:
+  enabled: true
+  skip_cities: [ECN]               # KKTC: Türk hatları zaten çalışıyor, eSIM önerisi anlamsız
+  tip: {title: "İnternet: eSIM", text: "Roaming yerine profildeki linkten eSIM al; uçak inince internetin hazır olsun."}
+  caption_line: "📶 Yurtdışı internet: profildeki linkten eSIM alabilirsin, iner inmez bağlan."
+  closing_text: "Yurtdışında internet: Airalo eSIM'ini profildeki linkten al, telefonuna yükle, iner inmez bağlan."
+

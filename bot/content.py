@@ -60,7 +60,7 @@ def _fmt(d: str | None) -> str:
     return f"{x.day} {AYLAR[x.month - 1]} {x.year}"
 
 
-def build_prompt(pick: dict, today: date) -> str:
+def build_prompt(pick: dict, today: date, esim: bool = False) -> str:
     rt = pick["format"] == "rt"
     mode = pick.get("mode", "firsat")
     visa = pick.get("country") in {"AT", "BE", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IS", "IT", "LV",
@@ -110,7 +110,10 @@ KURALLAR
    (ör. "stuttgart christmas market").
 11. Slayt başlıkları (title) üstteki etiketi tekrar etmesin ("Ne yenir?", "Ulaşım" gibi değil);
    şehre özgü, merak uyandıran kısa başlıklar yaz (ör. "Viyana'nın tadı", "Havalimanından şehre").
-9. closing.subtitle'da "Bilet linki profilde" geçsin.
+9. closing.subtitle'da "Bilet linki profilde" geçsin.{'''
+12. tips'in SONUNCUSU yurtdışı internet hakkında olsun: başlıkta "eSIM" geçsin, metinde roaming yerine
+   "profildeki linkten eSIM" alınabileceğini söyle; varsa bu ülkeye özgü pratik bir not ekle (ör. roaming
+   pahalı, kafelerde wifi zayıf). Marka adı yazma. Caption'da da kısa bir cümleyle profildeki eSIM linkini an.''' if esim else ''}
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
     uçuş özeti (tarih, kalkış ve varış saati (yerel saat), havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
     3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
@@ -272,11 +275,11 @@ def fit_counts(c: dict) -> dict:
 
 def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5-5",
              use_search: bool = True, max_searches: int = 4, effort: str = "medium",
-             thinking: str | None = "disabled") -> tuple[dict, dict]:
+             thinking: str | None = "disabled", esim: bool = False) -> tuple[dict, dict]:
     """(içerik, kullanım bilgisi) döndürür."""
     global EFFORT, THINKING
     EFFORT, THINKING = effort, thinking
-    prompt = build_prompt(pick, today)
+    prompt = build_prompt(pick, today, esim=esim)
     try:
         resp = _call(api_key, model, prompt, use_search, max_searches)
     except RuntimeError as e:
@@ -325,9 +328,36 @@ def disclosure_for(settings: dict) -> dict | None:
         return None
     word = d.get("word", "Tanıtım")
     brands = " · ".join(p["name"] for p in partners)
-    rel = "; ".join(p.get("relation", "") for p in partners if p.get("relation"))
+    rel = d.get("relation_text") or "; ".join(p.get("relation", "") for p in partners if p.get("relation"))
     line = f"{word} · {brands}: {rel}." if rel else f"{word} · {brands}"
     return {"word": word, "brands": brands, "line": line, "badge": f"{word} · {brands}"}
+
+
+def esim_for(settings: dict, pick: dict) -> dict | None:
+    """Bu postta eSIM notu olacak mı? Olacaksa ayarlardaki metinleri döndürür."""
+    e = settings.get("esim") or {}
+    if not e.get("enabled") or pick.get("city") in set(e.get("skip_cities") or []):
+        return None
+    return e
+
+
+def apply_esim(content: dict, esim: dict | None) -> dict:
+    """Son ipucu eSIM/profil linkinden bahsetmiyorsa standart eSIM ipucunu koy; caption'a satırı ekle."""
+    if not esim:
+        return content
+    items = content.get("tips", {}).get("items") or []
+    has_tip = any("esim" in (it.get("title", "") + it.get("text", "")).lower()
+                  and "profil" in it.get("text", "").lower() for it in items)
+    if items and not has_tip:
+        items[-1] = dict(esim["tip"])
+    cap = content.get("caption", "")
+    if "esim" not in cap.lower() or "profil" not in cap.lower():
+        lines = cap.rstrip().splitlines()
+        # "Fiyatlar ... değişebilir." satırı en sonda kalsın
+        at = next((i for i in range(len(lines) - 1, -1, -1) if lines[i].lower().startswith("fiyat")), len(lines))
+        lines[at:at] = [esim["caption_line"], ""] if at < len(lines) else ["", esim["caption_line"]]
+        content["caption"] = "\n".join(lines)
+    return content
 
 
 def clean_ad_tags(tags: list[str]) -> list[str]:
