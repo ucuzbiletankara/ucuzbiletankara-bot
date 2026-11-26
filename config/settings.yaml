@@ -4,9 +4,9 @@ currency: try
 markets: [tr, ru]          # Travelpayouts veri pazarları; ikisinden gelen fiyatların en ucuzu alınır
 
 scan:
-  months_ahead: 4           # bugünden itibaren kaç ay ileriye bakılsın
+  months_ahead: 6           # bugünden itibaren kaç ay ileriye bakılsın (erken planlama, vize süresi)
   min_days_ahead: 5         # en erken kaç gün sonraki uçuş paylaşılabilir
-  max_days_ahead: 120
+  max_days_ahead: 183
 
 round_trip:
   min_nights: 2
@@ -18,11 +18,16 @@ scoring:
   min_discount: 0.15        # rotanın normal (medyan) fiyatından en az %15 ucuz olmalı
   season_bonus: 15
   holiday_bonus: 10         # resmi tatile/köprüye denk gelen tarihler
-  sweet_spot_days: [10, 60] # bu aralıkta kalkan uçuşlara küçük bonus
+  sweet_spot_days: [21, 150] # bu aralıkta kalkan uçuşlara küçük bonus (planlamaya uygun süre)
   sweet_spot_bonus: 5
   recent_city_days: 21      # aynı şehir bu kadar gün içinde paylaşıldıysa elenir
   recent_country_days: 5    # aynı ülke bu kadar gün içinde paylaşıldıysa ceza
   recent_country_penalty: 20
+  # Vize gereken ülkelerde (Türk vatandaşları için) yakın tarihli kalkışlara ceza
+  visa_min_days: 30
+  visa_short_notice_penalty: 15
+  visa_countries: [AT, BE, CZ, DK, EE, FI, FR, DE, GR, HU, IS, IT, LV, LI, LT, LU, MT,
+                   NL, NO, PL, PT, SK, SI, ES, SE, CH, HR, BG, RO, GB, IE, CY]
 
 airlines:
   PC: Pegasus

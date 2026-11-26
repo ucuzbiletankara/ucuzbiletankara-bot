@@ -72,6 +72,7 @@ def main():
         if d["format"] == "rt":
             assert 2 <= d["nights"] <= 7
             assert d["price"] <= d["one_way_price"] * 2.3
+    assert res["pick"]["city"] == "VIE" and res["pick"]["mode"] == "firsat"
     print(scan.to_markdown(res, CITIES))
     print("TÜM KONTROLLER GEÇTİ")
 

@@ -125,6 +125,14 @@ def run(client, cities: dict, today: date | None = None) -> dict:
             deals.append(deal)
     deals = rank(deals)
 
+    # Günün seçimi: eşiği geçen en iyi fırsat; yoksa (yedek kural) en iyi aday,
+    # "fırsat" denmeden "Ankara'dan direkt" diliyle paylaşılır.
+    good = [d for d in deals if d.discount >= s["scoring"]["min_discount"]]
+    pick = None
+    if deals:
+        best = good[0] if good else deals[0]
+        pick = {**best.to_dict(), "mode": "firsat" if good else "direkt"}
+
     return {
         "generated_at": datetime.now(TR_TZ).isoformat(timespec="minutes"),
         "today": today.isoformat(),
@@ -135,6 +143,7 @@ def run(client, cities: dict, today: date | None = None) -> dict:
         "no_data": no_data,
         "too_little_data": sorted(thin),
         "deals": [d.to_dict() for d in deals],
+        "pick": pick,
     }
 
 

@@ -227,9 +227,13 @@ def score_deal(deal: Deal, today: date, history: list[dict], s: dict) -> Deal | 
         score += sc["season_bonus"]
     if deal.holidays:
         score += sc["holiday_bonus"]
+    lead = (out - today).days
     lo, hi = sc["sweet_spot_days"]
-    if lo <= (out - today).days <= hi:
+    if lo <= lead <= hi:
         score += sc["sweet_spot_bonus"]
+    if deal.country in set(sc.get("visa_countries") or []) and lead < sc.get("visa_min_days", 0):
+        score -= sc.get("visa_short_notice_penalty", 0)
+        deal.notes.append(f"Vize gerekli, kalkışa {lead} gün var")
     for h in history:
         days = (today - date.fromisoformat(h["date"])).days
         if h.get("country") == deal.country and days < sc["recent_country_days"]:
