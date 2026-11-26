@@ -212,6 +212,7 @@ def main() -> None:
         json.dumps(res, ensure_ascii=False, indent=2), encoding="utf-8"
     )
     md = to_markdown(res, cities)
+    (config.DATA_DIR / "scan_summary.md").write_text(md, encoding="utf-8")
     print(md)
     summary = os.environ.get("GITHUB_STEP_SUMMARY")
     if summary:

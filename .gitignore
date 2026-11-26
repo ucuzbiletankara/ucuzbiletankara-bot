@@ -2,4 +2,6 @@ __pycache__/
 *.pyc
 .env
 data/scan_latest.json
+data/scan_summary.md
+data/scan_log.txt
 output/

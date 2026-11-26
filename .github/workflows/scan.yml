@@ -1,12 +1,23 @@
 name: Fırsat taraması (test)
 
+# Elle: Actions → "Fırsat taraması (test)" → Run workflow
+# Otomatik: kod veya ayarlar güncellendiğinde
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "bot/**"
+      - "config/**"
+      - ".github/workflows/scan.yml"
+
+permissions:
+  contents: write
 
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -21,12 +32,32 @@ jobs:
       - name: Ankara'dan direkt fırsatları tara
         env:
           TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
-        run: python -m bot.scan
+        run: |
+          set -o pipefail
+          python -m bot.scan 2>&1 | tee data/scan_log.txt
 
       - name: Sonucu dosya olarak sakla
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: tarama-sonucu
-          path: data/scan_latest.json
+          path: |
+            data/scan_latest.json
+            data/scan_summary.md
+            data/scan_log.txt
           if-no-files-found: ignore
+
+      - name: Sonucu "tarama-sonuclari" dalına yaz
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/out
+          cp data/scan_latest.json data/scan_summary.md data/scan_log.txt /tmp/out/ 2>/dev/null || true
+          cd /tmp/out
+          git init -q -b tarama-sonuclari
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Tarama $(date -u +%Y-%m-%dT%H:%MZ) (${{ github.sha }})" || exit 0
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}" tarama-sonuclari
