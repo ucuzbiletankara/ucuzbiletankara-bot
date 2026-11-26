@@ -1,0 +1,56 @@
+name: Önizlemeyi yayınla
+
+# "onizleme" dalındaki hazır postu (görseller + caption) değiştirmeden Instagram'a paylaşır.
+# Tetikleme: elle (Run workflow) ya da onay/yayinla.txt dosyası güncellenince.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "onay/yayinla.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gunluk-post
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests PyYAML Pillow
+
+      - name: Önizlemeyi al
+        run: |
+          git fetch -q --depth 1 origin onizleme
+          mkdir -p output/post
+          git --work-tree=output/post checkout origin/onizleme -- .
+          git reset -q
+          ls output/post
+
+      - name: Instagram'a paylaş
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m bot.publish --force
+
+      - name: Paylaşım geçmişini kaydet ve sonucu yaz
+        if: success()
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          mkdir -p onay
+          cp data/last_publish.json onay/son_yayin.json
+          git add data/history.json onay/son_yayin.json
+          git commit -q -m "İlk/elle yayın kaydı $(date -u +%F) [skip ci]"
+          git pull -q --rebase origin main
+          git push -q origin HEAD:main
