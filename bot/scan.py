@@ -175,8 +175,8 @@ def to_markdown(res: dict, cities: dict, top: int = 15) -> str:
         lines.append("Bugün kurala uyan fırsat bulunamadı.")
     else:
         lines += [
-            "| # | Rota | Format | Tarih | Fiyat | Normal tek yön | İndirim | Sezon / tatil | Havayolu | Puan |",
-            "|---|---|---|---|---|---|---|---|---|---|",
+            "| # | Rota | Format | Tarih | Fiyat | Normal tek yön | İndirim | Veri | Sezon / tatil | Havayolu | Puan |",
+            "|---|---|---|---|---|---|---|---|---|---|---|",
         ]
         for i, d in enumerate(res["deals"][:top], 1):
             fmt = f"Gidiş-dönüş ({d['nights']} gece)" if d["format"] == "rt" else "Tek yön"
@@ -184,7 +184,7 @@ def to_markdown(res: dict, cities: dict, top: int = 15) -> str:
             tags = ", ".join(filter(None, [d["season"]] + d["holidays"])) or "–"
             lines.append(
                 f"| {i} | ESB → {d['destination_airport'] or d['city']} {d['city_name']} | {fmt} | {when} | "
-                f"**{tl(d['price'])}** | {tl(d['median_one_way'])} | %{d['discount']*100:.0f} | {tags} | "
+                f"**{tl(d['price'])}** | {tl(d['median_one_way'])} | %{d['discount']*100:.0f} | {d['samples']} | {tags} | "
                 f"{d['airline_name']} | {d['score']} |"
             )
         min_disc = config.settings()["scoring"]["min_discount"]

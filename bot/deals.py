@@ -83,7 +83,8 @@ class Deal:
     price: float                # rt ise gidiş-dönüş toplamı
     one_way_price: float        # aynı rotanın en ucuz tek yön fiyatı (karşılaştırma için)
     median_one_way: float
-    discount: float             # 0.25 = normal fiyattan %25 ucuz
+    discount: float             # 0.25 = normal fiyattan %25 ucuz (veri azsa temkinli küçültülür)
+    samples: int                # normal fiyatın kaç fiyat örneğinden hesaplandığı
     airline: str
     airline_name: str
     origin_airport: str
@@ -183,7 +184,12 @@ def build_deal(
         price = row["price"]
         dur = row.get("duration_to") or row.get("duration")
 
-    discount = max(0.0, 1 - per_leg / med) if med else 0.0
+    raw = max(0.0, 1 - per_leg / med) if med else 0.0
+    # Az fiyat örneği varsa "normal fiyat" güvenilmez → indirimi orantılı küçült
+    full = s["scoring"].get("full_confidence_samples", 10)
+    discount = raw * min(1.0, len(prices) / full)
+    if discount < raw:
+        notes.append(f"Az veri ({len(prices)} fiyat): indirim %{raw*100:.0f} → %{discount*100:.0f}")
     link = row.get("link")
     return Deal(
         city=code,
@@ -197,6 +203,7 @@ def build_deal(
         one_way_price=round(cheapest["price"]),
         median_one_way=round(med),
         discount=round(discount, 3),
+        samples=len(prices),
         airline=row.get("airline", ""),
         airline_name=airlines.get(row.get("airline", ""), row.get("airline", "")),
         origin_airport=row.get("origin_airport", ""),
