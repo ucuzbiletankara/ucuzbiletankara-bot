@@ -1,0 +1,35 @@
+{
+ "pick": {
+  "city": "STR",
+  "city_name": "Stuttgart",
+  "country": "DE",
+  "format": "ow",
+  "out_date": "2026-12-22",
+  "ret_date": null,
+  "nights": null,
+  "price": 3075,
+  "one_way_price": 3075,
+  "median_one_way": 6548,
+  "discount": 0.477,
+  "samples": 9,
+  "airline": "XQ",
+  "airline_name": "SunExpress",
+  "origin_airport": "ESB",
+  "destination_airport": "STR",
+  "duration_min": 210,
+  "season": "Noel pazarları",
+  "holidays": [],
+  "score": 52.7,
+  "link": "https://www.aviasales.com/search/ESB2212STR1?t=XQ17979231001797928500000210ESBSTR_b5c4671fbdfd28e511b5bf97ff13089b_4980&search_date=23112026&expected_price_uuid=01a209fb-3c1e-8031-65e3-eb6174585c1b&static_fare_key=TY%7CP0%7CH1%7CL1_1_20%7CCH0%7CR0%7CTBC1&itinerary_key=JxiJv4VjUaIjmlEjS0IvRA&origin_airports=0&expected_price_source=share&expected_price_currency=try&expected_price=3075",
+  "notes": [
+   "İki yönü direkt uygun gidiş-dönüş bulunamadı → tek yön",
+   "Az veri (9 fiyat): indirim %53 → %48",
+   "Vize gerekli, kalkışa 26 gün var"
+  ],
+  "mode": "firsat"
+ },
+ "media_id": "18158706631500900",
+ "id": "18158706631500900",
+ "permalink": "https://www.instagram.com/p/DgN6nJcmqbF/",
+ "timestamp": "2026-11-26T20:01:40+0000"
+}
