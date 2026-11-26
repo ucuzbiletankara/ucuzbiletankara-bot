@@ -81,9 +81,9 @@ disclosure:
 
 # Yurtdışı internet notu. Kullanıcı kuralı (26 Kasım): her postta yurtdışı internet için eSIM önerisi.
 # 27 Kasım: Airalo (ve Travelpayouts'taki diğer eSIM markaları) BTK engeli nedeniyle Türkiye'den açılmıyor →
-# Türkiye'den açılan bir ortak bulunana kadar linksiz, markasız öneri.
+# 27 Kasım (kullanıcı kararı): eSIM önerisi tamamen kapalı; sadece Aviasales kalıyor.
 esim:
-  enabled: true
+  enabled: false
   link_in_bio: false               # profilde çalışan bir eSIM ortak linki varsa true
   skip_cities: [ECN]               # KKTC: Türk hatları zaten çalışıyor, eSIM önerisi anlamsız
   tip: {title: "İnternet: eSIM", text: "Roaming yerine eSIM kullan; yola çıkmadan Türkiye'deyken al ve kur."}
