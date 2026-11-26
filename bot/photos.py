@@ -205,13 +205,13 @@ def collect(content: dict, city_en: str, finder: PhotoFinder) -> dict:
     """İçerikteki her fotoğraf alanı için fotoğraf bul. Sorgu bulunamazsa şehir adına düşer."""
     c = content
     jobs = [("cover", [c["cover"].get("photo_query"), f"{city_en} city"], "vertical"),
-            ("why_now", [c["why_now"].get("photo_query"), f"{city_en}"], "horizontal")]
+            ("why_now", [c["why_now"].get("photo_query"), c["cover"].get("photo_query"), f"{city_en} old town"], "horizontal")]
     for sec in ("sights_1", "sights_2"):
         for i, it in enumerate(c[sec]["items"]):
             jobs.append((f"{sec}_{i}", [it.get("photo_query"), f"{it['name']} {city_en}"], "horizontal"))
     for i, it in enumerate(c["food"]["items"]):
         jobs.append((f"food_{i}", [it.get("photo_query"), it["name"]], "horizontal"))
-    jobs += [("eat", [c["eat"].get("photo_query"), f"{city_en} restaurant"], "horizontal"),
-             ("stay", [c["stay"].get("photo_query"), f"{city_en} street"], "horizontal"),
+    jobs += [("eat", [c["eat"].get("photo_query"), f"{city_en} old town", f"{city_en} square"], "horizontal"),
+             ("stay", [c["stay"].get("photo_query"), f"{city_en} old town", f"{city_en} architecture"], "horizontal"),
              ("transport", [c["transport"].get("photo_query"), f"{city_en} tram"], "horizontal")]
     return {name: finder.find(name, qs, ori) for name, qs, ori in jobs}

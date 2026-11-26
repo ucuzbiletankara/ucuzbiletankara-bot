@@ -242,6 +242,19 @@ def fix_titles(c: dict, city: str) -> dict:
     return c
 
 
+def clamp_tags(c: dict) -> dict:
+    """Etiket kutucuklarına sığmayacak uzun etiketleri kısalt."""
+    for it in (c.get("eat") or {}).get("items", []):
+        tag = (it.get("tag") or "").strip()
+        if len(tag) > 11:
+            it["tag"] = tag.split()[0][:11]
+    for it in (c.get("stay") or {}).get("items", []):
+        b = (it.get("badge") or "").strip()
+        if len(b) > 5:
+            it["badge"] = b[:4]
+    return c
+
+
 def fit_counts(c: dict) -> dict:
     """Fazla öğeleri kırp (eksikler validate'te yakalanır)."""
     for path, (_, hi) in COUNTS.items():
@@ -277,7 +290,7 @@ def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5
         problems = validate(content)
         if problems:
             raise RuntimeError("İçerik şemaya uymuyor: " + "; ".join(problems))
-    content = fix_titles(content, pick["city_name"])
+    content = clamp_tags(fix_titles(content, pick["city_name"]))
     usage = resp.get("usage", {})
     usage["estimated_cost_usd"] = round(sum(
         request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)
