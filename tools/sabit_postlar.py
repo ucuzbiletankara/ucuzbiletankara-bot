@@ -4,10 +4,10 @@ from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).parent / "out"
 OUT.mkdir(exist_ok=True)
-SG = (Path(__file__).parent / "gf/ofl/spacegrotesk/SpaceGrotesk[wght].ttf").as_uri()
-DISC = "Tanıtım · Aviasales · Airalo"
+SG = Path("/home/claude/sabit/gf/ofl/spacegrotesk/SpaceGrotesk[wght].ttf").as_uri()
+DISC = "Tanıtım · Aviasales"
 DISC_LINE = ("Bilet ve tur satışı yapmıyoruz; fiyatları bulup gösteriyoruz. "
-             "Tanıtım · Aviasales · Airalo: profildeki bilet ve eSIM linkleri satış ortaklığı (komisyon) linkleridir.")
+             "Tanıtım · Aviasales: profildeki bilet linki satış ortaklığı (komisyon) linkidir.")
 
 CSS = f"""
 @font-face{{font-family:'Space Grotesk';src:url('{SG}') format('truetype');font-weight:300 700}}
@@ -106,7 +106,7 @@ def cover(n, kicker, title, sub, visual, size=150):
   <div style='display:flex;flex-direction:column;gap:16px'>
     {top(1)}
     <div style='display:flex;justify-content:space-between;align-items:center'>
-      <div class='kicker'>{kicker}</div><div class='badge'>{DISC}</div>
+      <div class='kicker'>{kicker}</div>
     </div>
   </div>
   <div class='sg' style='font-weight:700;font-size:{size}px;line-height:.95;letter-spacing:-6px'>{t}</div>
@@ -161,7 +161,7 @@ def closing(title, sub, ctas):
   <div style='display:grid;grid-template-columns:repeat(3,1fr);gap:20px'>{cards}</div>
   <div style='background:var(--navy);color:var(--cream);border-radius:24px;padding:30px 36px;display:flex;align-items:center;gap:26px'>
     <svg width='60' height='60' viewBox='0 0 24 24' fill='none' stroke='#FFC533' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' style='flex:none'><path d='M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1'/></svg>
-    <div><div style='font-weight:700;font-size:34px'>Bilet ve eSIM linkleri profilde</div>
+    <div><div style='font-weight:700;font-size:34px'>Bilet linki profilde</div>
     <div style='font-size:24px;color:var(--soft);margin-top:6px'>@ucuzbiletankara → profildeki link</div></div></div>
   <div style='font-size:22px;line-height:1.45'>{DISC_LINE}</div>
 </div>""", light=True)
@@ -182,7 +182,7 @@ POSTS = {
             ("Ne yenir?", "Mutlaka denemen gereken yerel lezzetler."),
             ("Nerede yenir?", "Köklü ve hâlâ açık mekânlar."),
             ("Nerede kalınır?", "Konaklamaya uygun semtler ve neden."),
-            ("Ulaşım + ipuçları", "Havalimanından şehre, vize, para ve eSIM."),
+            ("Ulaşım + ipuçları", "Havalimanından şehre, vize, para ve hava durumu."),
         ], "Postu kaydet: gittiğinde rehberin cebinde olsun."),
         closing("Takipte kal.", "Ankara'dan bir sonraki ucuz direkt uçuş yarın akşam burada.", [
             ("follow", "Takip et", "Her akşam yeni bir rota."),
@@ -217,7 +217,7 @@ POSTS = {
         ]),
         list_slide(3, "BİLETTEN SONRA", "Fiyat değiştiyse ve sonrası", [
             ("04", "Fiyat değiştiyse", "Fiyat, paylaşım anındaki en düşük fiyat. Bir gün önceye ya da sonraya da bak."),
-            ("05", "eSIM'i hallet", "Profildeki eSIM linkinden al, yola çıkmadan telefonuna kur; iner inmez internetin olsun."),
+            ("05", "Vizeyi unutma", "Vize gereken yerlerde randevuyu erken al; pasaportunun geçerlilik süresine bak."),
             ("06", "Rehberi kaydet", "Gezilecek yerler, yemek ve ulaşım bilgisi gittiğinde cebinde olsun."),
         ]),
         closing("İyi yolculuklar.", "Soru ya da öneri için DM'den yazabilirsin.", [
