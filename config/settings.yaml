@@ -54,3 +54,7 @@ airlines:
   LH: Lufthansa
   MS: EgyptAir
   A9: Georgian Airways
+
+publish:
+  enabled: false             # true olunca günlük iş akışı Instagram'a gerçekten paylaşır
+  ig_user_id: "17841480123113951"   # @ucuzbiletankara Instagram hesap kimliği (gizli değil)

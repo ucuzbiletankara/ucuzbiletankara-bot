@@ -1,0 +1,40 @@
+name: Instagram bağlantı testi
+
+# Yayın YAPMAZ. Token'ın çalıştığını ve hesabın görüldüğünü kontrol eder.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "bot/publish.py"
+      - ".github/workflows/ig_check.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests PyYAML
+      - name: Bağlantıyı test et
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: python -m bot.publish --check
+      - name: Sonucu "ig-test" dalına yaz (token içermez)
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/out && cp data/ig_check.json /tmp/out/ 2>/dev/null || echo '{"ok": false, "error": "sonuç dosyası yok"}' > /tmp/out/ig_check.json
+          cd /tmp/out
+          git init -q -b ig-test
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A && git commit -q -m "IG test $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}" ig-test

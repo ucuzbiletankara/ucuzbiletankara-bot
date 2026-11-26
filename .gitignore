@@ -5,3 +5,6 @@ data/scan_latest.json
 data/scan_summary.md
 data/scan_log.txt
 output/
+data/*_log.txt
+data/ig_check.json
+data/last_publish.json

@@ -1,0 +1,96 @@
+name: Günlük post
+
+# Her gün 19:07 (Türkiye saati) = 16:07 UTC: tara → içerik üret → Instagram'a paylaş.
+# Paylaşım sadece config/settings.yaml → publish.enabled: true ise yapılır.
+# Elle çalıştırmada "yayinla" işaretlenirse ayar kapalı olsa da paylaşır.
+on:
+  schedule:
+    - cron: "7 16 * * *"
+  workflow_dispatch:
+    inputs:
+      yayinla:
+        description: "Instagram'a paylaş (ayar kapalı olsa bile)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gunluk-post
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Kütüphaneleri kur
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Pixabay önbelleği (24 saat)
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: pixabay-${{ github.run_id }}
+          restore-keys: pixabay-
+
+      - name: 1) Fırsatları tara
+        env:
+          TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
+        run: |
+          set -o pipefail
+          python -m bot.scan 2>&1 | tee data/scan_log.txt
+
+      - name: 2) Postu üret
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: |
+          set -o pipefail
+          python -m bot.post 2>&1 | tee data/post_log.txt
+
+      - name: 3) Instagram'a paylaş
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          if [ "${{ inputs.yayinla }}" = "true" ]; then F="--force"; else F=""; fi
+          python -m bot.publish $F 2>&1 | tee data/publish_log.txt
+
+      - name: Paylaşım geçmişini kaydet
+        if: success()
+        run: |
+          if git diff --quiet data/history.json; then exit 0; fi
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add data/history.json
+          git commit -q -m "Paylaşım geçmişi $(date -u +%F) [skip ci]"
+          git pull -q --rebase origin main
+          git push -q origin HEAD:main
+
+      - name: Önizlemeyi "onizleme" dalına yaz
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p /tmp/out
+          cp -r output/post/. /tmp/out/ 2>/dev/null || true
+          cp data/scan_summary.md data/scan_latest.json data/*_log.txt data/last_publish.json /tmp/out/ 2>/dev/null || true
+          cd /tmp/out
+          git init -q -b onizleme
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Günlük $(date -u +%FT%H:%MZ)" || exit 0
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}" onizleme
