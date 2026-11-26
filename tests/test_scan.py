@@ -36,11 +36,13 @@ class FakeClient:
         y, m = map(int, departure_at.split("-"))
         days = [date(y, m, d) for d in range(1, 29)]
         out = []
-        for code in ([destination] if destination else NORMAL):
+        if destination and destination not in NORMAL:
+            return out
+        for code in ([destination] if destination else ["VIE", "IST", "JED"]):
             for d in days:
                 p = NORMAL[code] * rnd.uniform(0.85, 1.3)
                 if code == "VIE" and d == date(2026, 12, 12):
-                    p = 2900  # belirgin fırsat
+                    p = 1900  # belirgin fırsat
                 row = {
                     "origin": "ANK", "destination": code, "origin_airport": "ESB",
                     "destination_airport": code, "price": round(p), "airline": "PC",
@@ -64,6 +66,7 @@ def main():
     assert "ECN" in codes, "Ercan özel izinle listede olmalıydı"
     assert "TBS" in codes, "Gürcistan izinli olmalıydı"
     assert res["deals"][0]["city"] == "VIE", "En iyi fırsat Viyana olmalıydı"
+    assert "BER" in codes and "DXB" in codes, "Toplu sorguda görünmeyen bilinen rotalar ayrıca sorgulanmalıydı"
     for d in res["deals"]:
         assert date.fromisoformat(d["out_date"]) >= TODAY + timedelta(days=5)
         if d["format"] == "rt":

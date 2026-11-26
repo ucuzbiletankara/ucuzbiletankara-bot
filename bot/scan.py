@@ -57,22 +57,40 @@ def run(client, cities: dict, today: date | None = None) -> dict:
     origin = dest_cfg.get("origin", "ESB")
     months = month_list(today, s["scan"]["months_ahead"])
 
-    # 1) Ankara'dan direkt tek yön fiyatlar (tüm varış noktaları)
+    # 1) Keşif: "Ankara'dan her yere" toplu sorgu (yeni açılan rotaları yakalamak için)
     rows = []
     for market in s["markets"]:
         for ym in months:
             rows += client.prices_for_dates(origin, ym, one_way=True, direct=True, market=market)
 
-    # 2) Ülke kuralı
-    seen = sorted({r["destination"] for r in rows})
+    # 2) Ülke kuralı: keşfedilenler + bilinen direkt rotalar
+    known = list(dest_cfg.get("known_direct") or [])
+    seen = sorted({r["destination"] for r in rows} | set(known))
     allowed, excluded = [], []
     for code in seen:
         country = cities.get(code, {}).get("country", "")
         (allowed if city_allowed(code, country, dest_cfg) else excluded).append(code)
+
+    # 3) Her izinli şehir için ayrı sorgu (toplu sorgu sadece popüler rotaları döndürüyor).
+    #    Önce ilk pazar; veri azsa diğer pazarlar da denenir.
+    for code in allowed:
+        got = [r for r in rows if r["destination"] == code]
+        for market in s["markets"]:
+            if len(got) >= 6 and market != s["markets"][0]:
+                break
+            for ym in months:
+                new = client.prices_for_dates(
+                    origin, ym, destination=code, one_way=True, direct=True, market=market
+                )
+                got += new
+                rows += new
+
+    found = {r["destination"] for r in rows}
+    no_data = sorted(c for c in allowed if c not in found)
     allowed_rows = [r for r in rows if r["destination"] in allowed]
     grouped = group_one_way(allowed_rows, today, s)
 
-    # 3) Ön sıralama: tek yön indirimine göre en iyi şehirler için gidiş-dönüş ara
+    # 4) Ön sıralama: tek yön indirimine göre en iyi şehirler için gidiş-dönüş ara
     def pre_score(code: str) -> float:
         ps = [r["price"] for r in grouped[code]]
         if len(ps) < 3:
@@ -95,7 +113,7 @@ def run(client, cities: dict, today: date | None = None) -> dict:
                     )
         rt_best[code] = best_round_trip(rt_rows, today, s)
 
-    # 4) Fırsatları kur ve puanla
+    # 5) Fırsatları kur ve puanla
     deals, thin = [], []
     for code, ow_rows in grouped.items():
         deal = build_deal(code, ow_rows, rt_best.get(code), cities, dest_cfg, seasons, s)
@@ -112,8 +130,9 @@ def run(client, cities: dict, today: date | None = None) -> dict:
         "today": today.isoformat(),
         "origin": origin,
         "api_calls": getattr(client, "calls", None),
-        "direct_destinations_seen": seen,
-        "excluded_by_rules": excluded,
+        "direct_destinations_seen": sorted(found),
+        "excluded_by_rules": [c for c in excluded if c in found],
+        "no_data": no_data,
         "too_little_data": sorted(thin),
         "deals": [d.to_dict() for d in deals],
     }
@@ -138,9 +157,9 @@ def to_markdown(res: dict, cities: dict, top: int = 15) -> str:
     lines = [
         f"## Günün fırsatları – {res['today']}",
         "",
-        f"Ankara'dan direkt uçulan {len(res['direct_destinations_seen'])} nokta bulundu; "
-        f"{len(res['excluded_by_rules'])} tanesi kurala uymadığı için elendi. "
-        f"API çağrısı: {res['api_calls']}.",
+        f"Fiyat verisi gelen direkt nokta: {len(res['direct_destinations_seen'])}; "
+        f"kurala uymadığı için elenen: {len(res['excluded_by_rules'])}; "
+        f"değerlendirilen fırsat: {len(res['deals'])}. API çağrısı: {res['api_calls']}.",
         "",
     ]
     if not res["deals"]:
@@ -159,13 +178,22 @@ def to_markdown(res: dict, cities: dict, top: int = 15) -> str:
                 f"**{tl(d['price'])}** | {tl(d['median_one_way'])} | %{d['discount']*100:.0f} | {tags} | "
                 f"{d['airline_name']} | {d['score']} |"
             )
-        best = res["deals"][0]
-        lines += ["", f"**Bugün paylaşılacak post:** {best['city_name']} – {tl(best['price'])}"]
+        min_disc = config.settings()["scoring"]["min_discount"]
+        good = [d for d in res["deals"] if d["discount"] >= min_disc]
+        best = good[0] if good else res["deals"][0]
+        if good:
+            lines += ["", f"**Bugün paylaşılacak post:** {best['city_name']} – {tl(best['price'])}"]
+        else:
+            lines += ["", f"**Bugün %{min_disc*100:.0f} eşiğini geçen fırsat yok.** "
+                          f"En iyi aday: {best['city_name']} – {tl(best['price'])}"]
         if best["notes"]:
             lines.append("Not: " + "; ".join(best["notes"]))
     if res["excluded_by_rules"]:
         lines += ["", "**Kurala uymadığı için elenen direkt noktalar:** "
                   + ", ".join(f"{c} {name(c)}" for c in res["excluded_by_rules"])]
+    if res.get("no_data"):
+        lines += ["", "**Önbellekte hiç direkt fiyat bulunamayanlar:** "
+                  + ", ".join(f"{c} {name(c)}" for c in res["no_data"])]
     if res["too_little_data"]:
         lines += ["", "**Fiyat verisi az olduğu için değerlendirilemeyenler:** "
                   + ", ".join(f"{c} {name(c)}" for c in res["too_little_data"])]

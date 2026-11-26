@@ -63,6 +63,14 @@ allowed_countries:
 always_allow:
   - ECN  # Ercan, KKTC (veri kaynağında TR olarak görünebilir)
 
+# ESB'den direkt uçuşu olduğu bilinen yurt dışı şehirler (Kasım 2026).
+# Her biri ayrı ayrı sorgulanır. Liste dışında yeni bir direkt rota açılırsa
+# toplu taramada yakalanır ve kurala uyuyorsa otomatik eklenir.
+known_direct:
+  [VIE, DUS, LON, FRA, MUC, BER, AMS, RTM, BEG, STR, CGN, HAM, HAJ, BCN, MAD, LIS,
+   PAR, BRU, BUH, WAW, KRK, BUD, CPH, STO, ZRH, GVA, BSL, TGD, SKP, TIA, SJJ,
+   MOW, LED, BAK, TBS, ECN, CAI, SSH, DXB]
+
 # Ülkesi izinli olsa bile hiç paylaşılmayacak kodlar (gerekirse doldur)
 always_block: []
 
