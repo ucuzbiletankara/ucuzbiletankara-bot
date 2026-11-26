@@ -7,6 +7,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, field
 from datetime import date, datetime, timedelta
 from statistics import median
+from zoneinfo import ZoneInfo
 
 try:  # GitHub Actions'ta requirements.txt ile kurulur
     import holidays as _holidays
@@ -69,6 +70,45 @@ def holiday_names(start: date, end: date) -> list[str]:
     return names
 
 
+def _hhmm(dt: datetime, ref: datetime | None = None) -> str:
+    t = dt.strftime("%H:%M")
+    if ref is not None and dt.date() > ref.date():
+        t += f" +{(dt.date() - ref.date()).days}"
+    return t
+
+
+def flight_times(row: dict, airports_tz: dict | None) -> dict:
+    """Kalkış saati veriden gelir (yerel saat, ofsetli). Varış = kalkış + süre, varış havalimanı saat diliminde."""
+    out = {"flight_number": None, "out_dep_time": None, "out_arr_time": None,
+           "ret_dep_time": None, "ret_arr_time": None}
+    tz = airports_tz or {}
+    try:
+        dep = datetime.fromisoformat(row["departure_at"].replace("Z", "+00:00"))
+    except (KeyError, ValueError):
+        return out
+    if row.get("flight_number"):
+        out["flight_number"] = f"{row.get('airline', '')} {row['flight_number']}".strip()
+    if dep.tzinfo is None:
+        return out
+    out["out_dep_time"] = _hhmm(dep)
+    dur = row.get("duration_to") or (row.get("duration") if not row.get("return_at") else None)
+    dest_tz = tz.get(row.get("destination_airport") or row.get("destination"))
+    if dur and dest_tz:
+        arr = (dep + timedelta(minutes=dur)).astimezone(ZoneInfo(dest_tz))
+        out["out_arr_time"] = _hhmm(arr, dep)
+    if row.get("return_at"):
+        try:
+            rdep = datetime.fromisoformat(row["return_at"].replace("Z", "+00:00"))
+        except ValueError:
+            return out
+        if rdep.tzinfo is not None:
+            out["ret_dep_time"] = _hhmm(rdep)
+            if row.get("duration_back"):
+                rarr = (rdep + timedelta(minutes=row["duration_back"])).astimezone(ZoneInfo("Europe/Istanbul"))
+                out["ret_arr_time"] = _hhmm(rarr, rdep)
+    return out
+
+
 # ---------------------------------------------------------------- veri modeli
 
 @dataclass
@@ -95,6 +135,12 @@ class Deal:
     score: float = 0.0
     link: str | None = None
     notes: list[str] = field(default_factory=list)
+    # Uçuş saatleri (yerel saat, "HH:MM"; varış ertesi güne düşerse "+1")
+    flight_number: str | None = None
+    out_dep_time: str | None = None
+    out_arr_time: str | None = None
+    ret_dep_time: str | None = None
+    ret_arr_time: str | None = None
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -150,6 +196,7 @@ def build_deal(
     dest_cfg: dict,
     seasons: list[dict],
     s: dict,
+    airports_tz: dict | None = None,
 ) -> Deal | None:
     prices = [r["price"] for r in one_way_rows]
     if len(prices) < 3:
@@ -213,6 +260,7 @@ def build_deal(
         holidays=holiday_names(out, ret or out),
         link=("https://www.aviasales.com" + link) if link else None,
         notes=notes,
+        **flight_times(row, airports_tz),
     )
 
 

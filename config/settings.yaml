@@ -56,7 +56,7 @@ airlines:
   A9: Georgian Airways
 
 publish:
-  enabled: false             # true olunca günlük iş akışı Instagram'a gerçekten paylaşır
+  enabled: true              # true: günlük iş akışı Instagram'a gerçekten paylaşır (kullanıcı 26 Kasım'da açtırdı)
   ig_user_id: "17841480123113951"   # @ucuzbiletankara Instagram hesap kimliği (gizli değil)
 
 # Reklam/tanıtım bildirimi — Ticari Reklam ve Haksız Ticari Uygulamalar Yönetmeliği m.23/A (1 Ağustos 2026)

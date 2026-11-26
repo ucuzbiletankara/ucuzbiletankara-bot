@@ -70,7 +70,8 @@ def build_prompt(pick: dict, today: date) -> str:
     flight = f"""- Rota: Ankara Esenboğa (ESB) → {pick['city_name']} ({pick['destination_airport']}), aktarmasız
 - Format: {'gidiş-dönüş, iki yön de direkt' if rt else 'tek yön (dönüş ayrıca alınır)'}
 - Gidiş: {_fmt(pick['out_date'])}{f" · Dönüş: {_fmt(pick['ret_date'])} ({pick['nights']} gece)" if rt else ''}
-- Havayolu: {pick['airline_name']}
+- Havayolu: {pick['airline_name']}{(' · Uçuş no: ' + pick['flight_number']) if pick.get('flight_number') else ''}
+- Gidiş saatleri (yerel): kalkış {pick.get('out_dep_time') or '?'}, varış {pick.get('out_arr_time') or '?'}{(f" · Dönüş saatleri (yerel): kalkış {pick.get('ret_dep_time') or '?'}, Ankara'ya varış {pick.get('ret_arr_time') or '?'}") if rt else ''}
 - Fiyat: {price} TL{' (gidiş-dönüş toplam)' if rt else ' (tek yön)'}, kişi başı, 'den başlayan
 - Ülke kodu: {pick.get('country')} · Sezon/etkinlik etiketi: {pick.get('season') or 'yok'} · Resmi tatil: {', '.join(pick.get('holidays') or []) or 'yok'}"""
 
@@ -111,7 +112,7 @@ KURALLAR
    şehre özgü, merak uyandıran kısa başlıklar yaz (ör. "Viyana'nın tadı", "Havalimanından şehre").
 9. closing.subtitle'da "Bilet linki profilde" geçsin.
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
-    uçuş özeti (tarih, havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
+    uçuş özeti (tarih, kalkış ve varış saati (yerel saat), havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
     3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
     son satırda: "Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir." Hashtag'leri caption'a
     yazma, ayrı listede ver (Türkçe ve İngilizce karışık, şehir + ankara + seyahat temalı).

@@ -92,3 +92,19 @@ def load_cities() -> dict[str, dict]:
         if code:
             out[code] = {"name": c.get("name") or code, "country": c.get("country_code") or ""}
     return out
+
+
+def load_airport_timezones() -> dict[str, str]:
+    """Havalimanı ve şehir kodu -> IANA saat dilimi (varış saatini yerel saate çevirmek için)."""
+    r = requests.get(BASE + "/data/en/airports.json", timeout=60, headers={"Accept-Encoding": "gzip, deflate"})
+    r.raise_for_status()
+    out = {}
+    for a in r.json():
+        tz = a.get("time_zone")
+        if not tz:
+            continue
+        if a.get("code"):
+            out[a["code"]] = tz
+        if a.get("city_code"):
+            out.setdefault(a["city_code"], tz)
+    return out

@@ -20,7 +20,7 @@ from .deals import (
     rank,
     score_deal,
 )
-from .travelpayouts import Client, load_cities
+from .travelpayouts import Client, load_airport_timezones, load_cities
 
 TR_TZ = timezone(timedelta(hours=3))
 RT_CANDIDATES = 12  # gidiş-dönüş araması yapılacak en iyi şehir sayısı
@@ -48,7 +48,7 @@ def load_history() -> list[dict]:
     return []
 
 
-def run(client, cities: dict, today: date | None = None) -> dict:
+def run(client, cities: dict, today: date | None = None, airports_tz: dict | None = None) -> dict:
     s = config.settings()
     dest_cfg = config.destinations()
     seasons = config.seasons()
@@ -116,7 +116,7 @@ def run(client, cities: dict, today: date | None = None) -> dict:
     # 5) Fırsatları kur ve puanla
     deals, thin = [], []
     for code, ow_rows in grouped.items():
-        deal = build_deal(code, ow_rows, rt_best.get(code), cities, dest_cfg, seasons, s)
+        deal = build_deal(code, ow_rows, rt_best.get(code), cities, dest_cfg, seasons, s, airports_tz)
         if deal is None:
             thin.append(code)
             continue
@@ -214,7 +214,11 @@ def main() -> None:
     s = config.settings()
     client = Client(token, currency=s.get("currency", "try"))
     cities = load_cities()
-    res = run(client, cities)
+    try:
+        airports_tz = load_airport_timezones()
+    except Exception:  # noqa: BLE001  saat dilimi yoksa sadece kalkış saati gösterilir
+        airports_tz = {}
+    res = run(client, cities, airports_tz=airports_tz)
 
     config.DATA_DIR.mkdir(exist_ok=True)
     (config.DATA_DIR / "scan_latest.json").write_text(

@@ -35,8 +35,17 @@ def flight_view(pick: dict) -> dict:
         dates = short = f"{out.day} {AYLAR[out.month - 1]}"
     dur = pick.get("duration_min")
     dur_txt = f"{dur // 60} sa {dur % 60:02d} dk" if dur else ""
+
+    def leg(dep, arr):
+        if not dep:
+            return ""
+        return f"{dep} → {arr}" if arr else f"Kalkış {dep}"
+
+    out_leg = leg(pick.get("out_dep_time"), pick.get("out_arr_time"))
+    ret_leg = leg(pick.get("ret_dep_time"), pick.get("ret_arr_time"))
     return {**pick, "dates_txt": dates, "dates_short": short, "duration_txt": dur_txt,
-            "price_txt": tl(pick["price"])}
+            "price_txt": tl(pick["price"]), "out_leg": out_leg, "ret_leg": ret_leg,
+            "dep_short": pick.get("out_dep_time") or ""}
 
 
 def city_size(name: str) -> int:

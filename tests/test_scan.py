@@ -47,19 +47,21 @@ class FakeClient:
                     "origin": "ANK", "destination": code, "origin_airport": "ESB",
                     "destination_airport": code, "price": round(p), "airline": "PC",
                     "departure_at": iso(d), "transfers": 0, "duration_to": 165,
-                    "link": f"/search/ESB{d:%d%m}{code}1",
+                    "link": f"/search/ESB{d:%d%m}{code}1", "flight_number": "1673",
                 }
                 if not one_way:
                     ret = d + timedelta(days=rnd.choice([1, 3, 4, 9]))
                     row["return_at"] = iso(ret, 18)
                     row["return_transfers"] = rnd.choice([0, 0, 1])
+                    row["duration_back"] = 175
                     row["price"] = round(p * rnd.uniform(1.7, 2.6))
                 out.append(row)
         return out
 
 
 def main():
-    res = scan.run(FakeClient(), CITIES, today=TODAY)
+    tz = {c: "Europe/Vienna" for c in ["VIE", "BER"]} | {"DXB": "Asia/Dubai", "TBS": "Asia/Tbilisi", "ECN": "Asia/Nicosia"}
+    res = scan.run(FakeClient(), CITIES, today=TODAY, airports_tz=tz)
     codes = [d["city"] for d in res["deals"]]
     assert "JED" in res["excluded_by_rules"], "Cidde elenmeliydi"
     assert "IST" in res["excluded_by_rules"], "Yurt içi elenmeliydi"
@@ -73,6 +75,11 @@ def main():
             assert 2 <= d["nights"] <= 7
             assert d["price"] <= d["one_way_price"] * 2.3
     assert res["pick"]["city"] == "VIE" and res["pick"]["mode"] == "firsat"
+    p = res["pick"]
+    assert p["out_dep_time"] == "09:00" and p["out_arr_time"] == "09:45", (p["out_dep_time"], p["out_arr_time"])
+    assert p["flight_number"] == "PC 1673"
+    rts = [d for d in res["deals"] if d["format"] == "rt"]
+    assert rts and all(d["ret_dep_time"] == "18:00" for d in rts), [d["ret_dep_time"] for d in rts]
     print(scan.to_markdown(res, CITIES))
     print("TÜM KONTROLLER GEÇTİ")
 
