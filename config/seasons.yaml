@@ -1,0 +1,50 @@
+# Sezon ve gündem takvimi.
+# Uçuşun KALKIŞ tarihi bu aralığa düşüyorsa ve şehir listede varsa fırsat ek puan alır.
+# Tema metni, içerik üretiminde "Neden şimdi?" slaydına ipucu olarak verilir.
+# Tarihler AA-GG biçiminde, yıl her yıl tekrar eder.
+
+seasons:
+  - name: Noel pazarları
+    start: "11-15"
+    end: "12-26"
+    cities: [VIE, BER, MUC, FRA, DUS, STR, CGN, HAM, HAJ, BUD, KRK, CPH, ZRH, BSL, EAP, BRU, PRG, WAW, STO, AMS]
+
+  - name: Yılbaşı kutlamaları
+    start: "12-27"
+    end: "01-02"
+    cities: [LON, PAR, BER, VIE, BUD, AMS, DXB]
+
+  - name: Kayak ve kış masalı
+    start: "12-15"
+    end: "03-10"
+    cities: [GVA, ZRH, SJJ, MUC, BSL, EAP]
+
+  - name: Kışın güneşe kaçış
+    start: "12-01"
+    end: "03-31"
+    cities: [DXB, SSH, CAI, LIS, BCN, MAD]
+
+  - name: Lale ve bahar
+    start: "03-20"
+    end: "05-10"
+    cities: [AMS, RTM, PAR, LIS, MAD, BCN]
+
+  - name: Beyaz geceler
+    start: "06-01"
+    end: "07-10"
+    cities: [LED, STO, CPH]
+
+  - name: Deniz ve kumsal
+    start: "06-15"
+    end: "09-15"
+    cities: [TGD, TIA, BCN, ECN, LIS, SSH]
+
+  - name: Oktoberfest
+    start: "09-15"
+    end: "10-06"
+    cities: [MUC]
+
+  - name: Sonbahar şehir turu
+    start: "09-20"
+    end: "11-10"
+    cities: [BUD, PRG, VIE, KRK, PAR, TBS, BAK]

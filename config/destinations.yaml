@@ -1,0 +1,114 @@
+# Hangi ülkelere giden uçuşlar paylaşılabilir?
+# Kural: Ankara (ESB) çıkışlı, aktarmasız, yurt dışı, turistik.
+# Ülke kodları ISO-3166 (2 harf).
+
+origin: ESB          # Ankara Esenboğa
+
+allowed_countries:
+  # --- Avrupa (tamamı) ---
+  - AL  # Arnavutluk
+  - AD  # Andorra
+  - AT  # Avusturya
+  - BE  # Belçika
+  - BA  # Bosna-Hersek
+  - BG  # Bulgaristan
+  - HR  # Hırvatistan
+  - CY  # Kıbrıs (Ercan dahil)
+  - CZ  # Çekya
+  - DK  # Danimarka
+  - EE  # Estonya
+  - FI  # Finlandiya
+  - FR  # Fransa
+  - DE  # Almanya
+  - GR  # Yunanistan
+  - HU  # Macaristan
+  - IS  # İzlanda
+  - IE  # İrlanda
+  - IT  # İtalya
+  - XK  # Kosova
+  - LV  # Letonya
+  - LI  # Lihtenştayn
+  - LT  # Litvanya
+  - LU  # Lüksemburg
+  - MT  # Malta
+  - MD  # Moldova
+  - MC  # Monako
+  - ME  # Karadağ
+  - NL  # Hollanda
+  - MK  # Kuzey Makedonya
+  - NO  # Norveç
+  - PL  # Polonya
+  - PT  # Portekiz
+  - RO  # Romanya
+  - SM  # San Marino
+  - RS  # Sırbistan
+  - SK  # Slovakya
+  - SI  # Slovenya
+  - ES  # İspanya
+  - SE  # İsveç
+  - CH  # İsviçre
+  - UA  # Ukrayna
+  - GB  # Birleşik Krallık
+  # --- Avrupa dışı, kullanıcının listesi ---
+  - AZ  # Azerbaycan
+  - RU  # Rusya
+  - TH  # Tayland
+  - JP  # Japonya
+  - KR  # Güney Kore
+  - EG  # Mısır
+  - AE  # BAE (Dubai)
+  - GE  # Gürcistan (26 Kasım 2026'da eklendi)
+
+# Ülkesi ne olursa olsun her zaman izinli şehir/havalimanı kodları
+always_allow:
+  - ECN  # Ercan, KKTC (veri kaynağında TR olarak görünebilir)
+
+# Ülkesi izinli olsa bile hiç paylaşılmayacak kodlar (gerekirse doldur)
+always_block: []
+
+# Türkçe şehir adları (veri kaynağında olmayanlar İngilizce adla gelir)
+city_names_tr:
+  VIE: Viyana
+  BER: Berlin
+  MUC: Münih
+  FRA: Frankfurt
+  DUS: Düsseldorf
+  STR: Stuttgart
+  CGN: Köln
+  HAM: Hamburg
+  HAJ: Hannover
+  LON: Londra
+  PAR: Paris
+  AMS: Amsterdam
+  RTM: Rotterdam
+  BRU: Brüksel
+  BCN: Barselona
+  MAD: Madrid
+  LIS: Lizbon
+  CPH: Kopenhag
+  STO: Stockholm
+  ZRH: Zürih
+  GVA: Cenevre
+  BSL: Basel
+  EAP: Basel
+  BUD: Budapeşte
+  KRK: Krakov
+  WAW: Varşova
+  BUH: Bükreş
+  BEG: Belgrad
+  SKP: Üsküp
+  TIA: Tiran
+  TGD: Podgorica
+  SJJ: Saraybosna
+  MOW: Moskova
+  LED: St. Petersburg
+  BAK: Bakü
+  TBS: Tiflis
+  ECN: Ercan (KKTC)
+  CAI: Kahire
+  SSH: Şarm El-Şeyh
+  DXB: Dubai
+  ROM: Roma
+  MIL: Milano
+  ATH: Atina
+  PRG: Prag

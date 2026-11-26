@@ -1,0 +1,43 @@
+# Fırsat seçme ayarları. Rakamları değiştirerek sistemin davranışını ayarlayabilirsin.
+
+currency: try
+markets: [tr, ru]          # Travelpayouts veri pazarları; ikisinden gelen fiyatların en ucuzu alınır
+
+scan:
+  months_ahead: 4           # bugünden itibaren kaç ay ileriye bakılsın
+  min_days_ahead: 5         # en erken kaç gün sonraki uçuş paylaşılabilir
+  max_days_ahead: 120
+
+round_trip:
+  min_nights: 2
+  max_nights: 7
+  # Gidiş-dönüş fiyatı, en ucuz tek yön fiyatının bu katından pahalıysa sadece gidiş gösterilir
+  max_ratio_to_one_way: 2.3
+
+scoring:
+  min_discount: 0.15        # rotanın normal (medyan) fiyatından en az %15 ucuz olmalı
+  season_bonus: 15
+  holiday_bonus: 10         # resmi tatile/köprüye denk gelen tarihler
+  sweet_spot_days: [10, 60] # bu aralıkta kalkan uçuşlara küçük bonus
+  sweet_spot_bonus: 5
+  recent_city_days: 21      # aynı şehir bu kadar gün içinde paylaşıldıysa elenir
+  recent_country_days: 5    # aynı ülke bu kadar gün içinde paylaşıldıysa ceza
+  recent_country_penalty: 20
+
+airlines:
+  PC: Pegasus
+  VF: AJet
+  XQ: SunExpress
+  TK: Türk Hava Yolları
+  J2: AZAL
+  FZ: flydubai
+  W6: Wizz Air
+  W4: Wizz Air Malta
+  SU: Aeroflot
+  QR: Qatar Airways
+  TO: Transavia France
+  HV: Transavia
+  OS: Austrian Airlines
+  LH: Lufthansa
+  MS: EgyptAir
+  A9: Georgian Airways
