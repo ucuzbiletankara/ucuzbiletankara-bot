@@ -67,10 +67,10 @@ publish:
 # Menfaat ilişkisi OLMAYAN marka anmalarında (havayolu, restoran...) etiket KULLANILMAZ.
 disclosure:
   word: Tanıtım                   # "Reklam" ya da "Tanıtım" (ikisi de yönetmelikte geçerli)
-  # Kapak görselinde etiket YOK (kullanıcı kararı, 27 Kasım). Bildirim: caption'ın ilk satırı + #reklam + son slayt alt yazısı.
+  # Kapak görselinde etiket YOK; caption'da tanıtım satırı en altta, hashtag'lerin hemen üstünde (kullanıcı kararları, 27 Kasım). + #reklam + son slayt alt yazısı.
   # Profildeki bilet linki Aviasales (Travelpayouts) satış ortaklığı linki → postlar bu linke yönlendiriyor
   affiliate_bio_link: true
-  # Caption'ın ilk satırı: "Tanıtım · <ortaklar>: <relation_text>." (yoksa ortakların relation'ları birleşir)
+  # Caption'daki tanıtım satırı: "Tanıtım · <ortaklar>: <relation_text>." (yoksa ortakların relation'ları birleşir)
   relation_text: profildeki bilet linki satış ortaklığı (komisyon) linkidir
   partners:
     - name: Aviasales

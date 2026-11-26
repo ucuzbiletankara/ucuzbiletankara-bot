@@ -29,9 +29,11 @@ def build_caption(content: dict, photos: dict, disclosure: dict | None) -> str:
     credits = sorted({p["credit"] for p in photos.values() if p and p.get("credit")})
     body = "\n".join(l for l in tidy_caption(content["caption"]).splitlines()
                      if l.strip().lower() not in {"#reklam", "#işbirliği", "#tanıtım"})
-    parts = ([disclosure["line"]] if disclosure else []) + [body]
+    parts = [body]
     if credits:
         parts.append("Fotoğraflar: Pixabay, Wikimedia Commons (" + "; ".join(credits) + ")")
+    if disclosure:  # kullanıcı kararı (27 Kasım): tanıtım satırı en altta, hashtag'lerin hemen üstünde
+        parts.append(disclosure["line"])
     parts.append(tags)
     return "\n\n".join(p for p in parts if p)
 

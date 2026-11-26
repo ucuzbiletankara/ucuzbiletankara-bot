@@ -184,13 +184,14 @@ def record_history(pick: dict, result: dict) -> None:
 
 
 def check_disclosure(caption: str, disclosure: dict | None) -> None:
-    """Yönetmelik m.23/A: bildirim gereken postta "Reklam/Tanıtım" + marka İLK satırda olmalı."""
+    """Yönetmelik m.23/A: bildirim gereken postta "Reklam/Tanıtım" + marka caption'da yer almalı.
+    Kullanıcı kararı (27 Kasım): satır en altta, hashtag'lerin hemen üstünde."""
     if not disclosure:
         return
-    first = caption.strip().splitlines()[0] if caption.strip() else ""
     word = disclosure.get("word", "Tanıtım").lower()
-    if word not in first.lower() or disclosure["brands"].split(" · ")[0].lower() not in first.lower():
-        raise IGError("Reklam/tanıtım bildirimi caption'ın ilk satırında değil; post paylaşılmadı.")
+    brand = disclosure["brands"].split(" · ")[0].lower()
+    if not any(word in l.lower() and brand in l.lower() for l in caption.splitlines()):
+        raise IGError("Reklam/tanıtım bildirimi caption'da yok; post paylaşılmadı.")
 
 
 # ---------------------------------------------------------------- giriş noktası
