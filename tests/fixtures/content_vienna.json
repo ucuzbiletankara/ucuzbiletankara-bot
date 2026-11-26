@@ -1,0 +1,68 @@
+{
+  "airport_name": "Viyana Schwechat",
+  "cover": {"subtitle": "Noel pazarları sezonunda bir hafta sonu", "photo_query": "vienna christmas market night"},
+  "why_now": {
+    "title": "Noel pazarları açık",
+    "subtitle": "Şehirde bu sezon 15 pazar, 800'ü aşkın stant var.",
+    "photo_query": "schonbrunn christmas market",
+    "photo_label": "Schönbrunn Noel pazarı",
+    "rows": [
+      {"name": "Rathausplatz", "detail": "13 Kas – 26 Ara · 10:00–22:00"},
+      {"name": "Schönbrunn Sarayı", "detail": "6 Kas – 6 Oca · 10:00–21:00"},
+      {"name": "Belvedere Sarayı", "detail": "20 Kas – 31 Ara"},
+      {"name": "Freyung (Eski Viyana)", "detail": "14 Kas – 23 Ara · 10:00–21:00"},
+      {"name": "Maria-Theresien-Platz", "detail": "20 Kas – 26 Ara"}
+    ],
+    "tip": "Rathausplatz'ta pazarın hemen yanında buz pateni pisti de kuruluyor."
+  },
+  "sights_1": {"title": "İmparatorluk Viyanası", "items": [
+    {"name": "Stephansdom", "desc": "Şehrin simgesi olan katedral. Güney kulesine 343 basamakla çıkıp çatıdaki renkli kiremitleri yakından gör.", "photo_query": "stephansdom vienna"},
+    {"name": "Hofburg Sarayı", "desc": "Habsburgların kış sarayı. Sisi Müzesi ve İspanyol Binicilik Okulu aynı kompleks içinde.", "photo_query": "hofburg vienna"},
+    {"name": "Schönbrunn Sarayı", "desc": "Yazlık saray. Bahçeye giriş ücretsiz; Gloriette tepesine yürü, şehir ayaklarının altında.", "photo_query": "schonbrunn palace"},
+    {"name": "Belvedere Sarayı", "desc": "Klimt'in ünlü \"Öpücük\" tablosu Yukarı Belvedere'de. Önündeki pazarla birlikte gez.", "photo_query": "belvedere palace vienna"}
+  ]},
+  "sights_2": {"title": "Yerel Viyana", "items": [
+    {"name": "Naschmarkt", "desc": "Yaklaşık 1,5 km'lik açık pazar: baharat, peynir, sokak lezzetleri. Cumartesi bit pazarı kurulur.", "photo_query": "naschmarkt vienna"},
+    {"name": "Prater ve Riesenrad", "desc": "1897'den beri dönen dev dönme dolap. Altındaki kış pazarında Noel atmosferi devam ediyor.", "photo_query": "riesenrad vienna"},
+    {"name": "MuseumsQuartier", "desc": "Leopold Müzesi, modern sanat müzesi mumok ve kafeleriyle şehrin kültür avlusu.", "photo_query": "museumsquartier vienna"},
+    {"name": "Hundertwasserhaus", "desc": "Renkli, eğri çizgili ünlü konut binası. İçi gezilmiyor ama dışarıdan fotoğraf ücretsiz.", "photo_query": "hundertwasserhaus"}
+  ]},
+  "food": {"title": "Viyana'nın tadı", "items": [
+    {"name": "Wiener Schnitzel", "desc": "İncecik dövülüp kızartılan dana eti; yanında patates salatası. Menüde \"vom Schwein\" yazıyorsa domuzdur.", "photo_query": "wiener schnitzel"},
+    {"name": "Sachertorte", "desc": "Kayısı reçelli efsane çikolatalı pasta. Yanına şekersiz krema (Schlagobers) iste.", "photo_query": "sachertorte"},
+    {"name": "Apfelstrudel", "desc": "Kâğıt inceliğinde hamurla sarılmış elmalı tatlı, sıcak vanilya sosuyla.", "photo_query": "apple strudel"},
+    {"name": "Punsch ve Glühwein", "desc": "Pazarların sıcak içkileri. Alkolsüz isteyene \"Kinderpunsch\" var.", "photo_query": "mulled wine christmas market"}
+  ], "note_title": "Hassasiyetin varsa", "note": "Sosis tezgâhlarındaki (Würstelstand) ürünlerin çoğu domuz etidir. \"Rind\" dana, \"Huhn\" tavuk demek."},
+  "eat": {"title": "Klasik adresler", "photo_query": "vienna coffee house interior", "items": [
+    {"tag": "Schnitzel", "name": "Figlmüller", "desc": "Tabaktan taşan schnitzel'iyle ünlü. Rezervasyonsuz gitme."},
+    {"tag": "Kahve", "name": "Café Central", "desc": "Sütunlu tavanıyla tarihî kahvehane. Sabah erken git, sıra kısalır."},
+    {"tag": "Tatlı", "name": "Café Sacher", "desc": "Sachertorte'nin doğduğu yer, Opera binasının hemen arkasında."},
+    {"tag": "Bütçe", "name": "Naschmarkt tezgâhları", "desc": "Falafel'den deniz ürünlerine ayakta, hızlı ve hesaplı."}
+  ], "tip": "Bütçe ipucu: Hafta içi öğlen restoranların \"Mittagsmenü\" fiyatı akşamdan çok daha uygun."},
+  "stay": {"title": "4 semt, 4 bütçe", "photo_query": "vienna street evening", "items": [
+    {"badge": "1.", "name": "Innere Stadt", "desc": "Her şey yürüme mesafesinde. Konum en iyi, fiyat en yüksek."},
+    {"badge": "7.", "name": "Neubau", "desc": "Butik kafeler, MuseumsQuartier'ye yakın. Konum ve fiyat dengesi iyi."},
+    {"badge": "2.", "name": "Leopoldstadt", "desc": "Prater'e ve merkeze yakın, Tuna Kanalı kıyısı. Çoğu zaman daha uygun."},
+    {"badge": "10.", "name": "Hauptbahnhof çevresi", "desc": "Havalimanı treni ve metro kapıda. Ekonomik zincir oteller burada."}
+  ], "footnote": "Rakamlar Viyana'nın semt (Bezirk) numaralarıdır."},
+  "transport": {"title": "Havalimanından şehre", "photo_query": "vienna tram", "cards": [
+    {"label": "En ucuz", "name": "S7", "desc": "Banliyö treni, Wien Mitte'ye yaklaşık 25 dk."},
+    {"label": "En hızlı", "name": "CAT", "desc": "Wien Mitte'ye 16 dk, durmadan. Daha pahalı."},
+    {"label": "Gara", "name": "ÖBB", "desc": "Hauptbahnhof'a yaklaşık 15 dk."}
+  ], "city_items": [
+    {"bold": "24, 48 veya 72 saatlik bilet", "text": "al: metro, tramvay ve otobüs tek biletle."},
+    {"bold": "1 ve 2 numaralı tramvaylar", "text": "Ring caddesinin büyük kısmını dolaşır; opera, parlamento, belediye sarayı pencereden geçer."}
+  ]},
+  "tips": {"title": "6 Viyana ipucu", "items": [
+    {"title": "Vize", "text": "Schengen vizesi gerekiyor. Randevuyu tarihten çok önce al."},
+    {"title": "Para", "text": "Euro. Kart her yerde geçer ama pazar tezgâhları için biraz nakit taşı."},
+    {"title": "Hava", "text": "Aralık'ta gündüz çoğunlukla 0–5 °C. Kat kat giyin; eldiven ve bere şart."},
+    {"title": "Depozitolu kupa", "text": "Pazarlarda içecek, depozitosu alınan kupada gelir. İade et ya da hatıra olarak sakla."},
+    {"title": "Pazar günü", "text": "Mağazaların çoğu kapalı. Alışverişi cumartesiye planla."},
+    {"title": "Su", "text": "Musluk suyu Alplerden geliyor ve içilebilir. Şişe suya para verme."}
+  ]},
+  "closing": {"title": "Bavulu hazırla.", "subtitle": "Bilet linki profilde. Fiyat yükselmeden bak."},
+  "caption": "Ankara'dan aktarmasız Viyana ✈️ ...",
+  "hashtags": ["viyana", "ankara"],
+  "sources": []
+}

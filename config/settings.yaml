@@ -1,6 +1,10 @@
 # Fırsat seçme ayarları. Rakamları değiştirerek sistemin davranışını ayarlayabilirsin.
 
 currency: try
+
+content:
+  model: claude-sonnet-5-5   # içerik metinlerini yazan Claude modeli
+
 markets: [tr, ru]          # Travelpayouts veri pazarları; ikisinden gelen fiyatların en ucuzu alınır
 
 scan:

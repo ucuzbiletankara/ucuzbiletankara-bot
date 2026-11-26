@@ -1,15 +1,9 @@
 name: Fırsat taraması (test)
 
-# Elle: Actions → "Fırsat taraması (test)" → Run workflow
-# Otomatik: kod veya ayarlar güncellendiğinde
+# Sadece elle: Actions → "Fırsat taraması (test)" → Run workflow
+# (Kod güncellenince tarama + post üretimini "Post önizleme (test)" iş akışı yapar.)
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "bot/**"
-      - "config/**"
-      - ".github/workflows/scan.yml"
 
 permissions:
   contents: write
