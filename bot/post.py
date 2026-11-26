@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
-from .content import apply_esim, clean_ad_tags, disclosure_for, esim_for, generate, shorten_request
+from .content import apply_esim, tidy_caption, clean_ad_tags, disclosure_for, esim_for, generate, shorten_request
 from .photos import PhotoFinder, collect
 from .render import render_post, overflow_report
 
@@ -27,7 +27,7 @@ def build_caption(content: dict, photos: dict, disclosure: dict | None) -> str:
         tags = ["reklam"] + tags
     tags = " ".join("#" + t.lstrip("#").replace(" ", "") for t in tags)
     credits = sorted({p["credit"] for p in photos.values() if p and p.get("credit")})
-    body = "\n".join(l for l in content["caption"].strip().splitlines()
+    body = "\n".join(l for l in tidy_caption(content["caption"]).splitlines()
                      if l.strip().lower() not in {"#reklam", "#işbirliği", "#tanıtım"})
     parts = ([disclosure["line"]] if disclosure else []) + [body]
     if credits:

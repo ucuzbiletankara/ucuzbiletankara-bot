@@ -112,12 +112,13 @@ KURALLAR
    şehre özgü, merak uyandıran kısa başlıklar yaz (ör. "Viyana'nın tadı", "Havalimanından şehre").
 9. closing.subtitle'da "Bilet linki profilde" geçsin.{'''
 12. tips'in SONUNCUSU yurtdışı internet hakkında olsun: başlıkta "eSIM" geçsin, metinde roaming yerine
-   "profildeki linkten eSIM" alınabileceğini söyle; varsa bu ülkeye özgü pratik bir not ekle (ör. roaming
-   pahalı, kafelerde wifi zayıf). Marka adı yazma. Caption'da da kısa bir cümleyle profildeki eSIM linkini an.''' if esim else ''}
+   "profildeki linkten eSIM" alınabileceğini söyle; doğru olduğundan eminsen bu ülkeye özgü kısa bir not
+   ekleyebilirsin, emin değilsen ekleme. Marka adı yazma. Caption'da da kısa bir cümleyle profildeki eSIM linkini an.''' if esim else ''}
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
     uçuş özeti (tarih, kalkış ve varış saati (yerel saat), havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
     3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
-    son satırda: "Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir." Hashtag'leri caption'a
+    son satırda: "Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir." Bölümleri boş satırla
+    (\\n\\n) ayır, liste maddelerini ayrı satırlara yaz; caption tek paragraf OLMASIN. Hashtag'leri caption'a
     yazma, ayrı listede ver (Türkçe ve İngilizce karışık, şehir + ankara + seyahat temalı).
     #reklam, #işbirliği, #sponsor gibi reklam etiketlerini ve "reklam/tanıtım" bildirimini SEN EKLEME;
     gerekiyorsa sistem kurala uygun biçimde ekliyor. Caption'ın ilk satırı rota + fiyat olsun.
@@ -331,6 +332,17 @@ def disclosure_for(settings: dict) -> dict | None:
     rel = d.get("relation_text") or "; ".join(p.get("relation", "") for p in partners if p.get("relation"))
     line = f"{word} · {brands}: {rel}." if rel else f"{word} · {brands}"
     return {"word": word, "brands": brands, "line": line, "badge": f"{word} · {brands}"}
+
+
+def tidy_caption(cap: str) -> str:
+    """Model caption'ı tek paragraf yazdıysa okunur hâle getir: cümleler ayrı satır, maddeler alt alta."""
+    cap = cap.strip()
+    if cap.count("\n") >= 3:
+        return cap
+    cap = re.sub(r"\s+([-•▪️✅📍✈️👉]\s)", r"\n\1", cap)                     # madde imleri alt alta
+    cap = re.sub(r"(?<=[.!?])\s+(?=[A-ZÇĞİÖŞÜ0-9📶✈️👉])", "\n\n", cap)       # cümleler ayrı paragraf
+    cap = re.sub(r"(\S)\s*\n(- |• )", r"\1\n\2", cap)
+    return re.sub(r"\n{3,}", "\n\n", cap)
 
 
 def esim_for(settings: dict, pick: dict) -> dict | None:
