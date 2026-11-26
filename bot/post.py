@@ -50,7 +50,8 @@ def main() -> None:
     from . import content as content_mod
     try:
         content, usage = generate(pick, api_key, today, model=model,
-                                  max_searches=cc.get("max_searches", 4), effort=cc.get("effort", "medium"))
+                                  max_searches=cc.get("max_searches", 4), effort=cc.get("effort", "medium"),
+                                  thinking=cc.get("thinking", "disabled"))
     finally:
         (OUT / "claude_raw.json").write_text(
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")

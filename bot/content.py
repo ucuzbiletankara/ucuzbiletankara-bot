@@ -113,7 +113,7 @@ KURALLAR
     yazma, ayrı listede ver (Türkçe ve İngilizce karışık, şehir + ankara + seyahat temalı).
 
 ÇIKTI: Araştırmanı bitirdikten sonra SADECE aşağıdaki şemaya uyan geçerli JSON'u <json> ve </json> etiketleri
-arasında ver. Şema (değerler açıklamadır, gerçek içerikle doldur):
+arasında ver. JSON'u girintisiz, tek satır (minified) yaz; araştırma sırasında uzun açıklama yazma. Şema (değerler açıklamadır, gerçek içerikle doldur):
 {json.dumps(SCHEMA_EXAMPLE, ensure_ascii=False, indent=1)}
 """
 
@@ -130,6 +130,7 @@ def _post(api_key: str, body: dict) -> dict:
 
 
 EFFORT = "medium"
+THINKING = "disabled"
 
 PRICES = {  # $ / milyon token: (giriş, çıkış); Haiku 100k üstü istekte pahalı kademe
     "claude-haiku-5-5": [(100_000, 0.10, 0.50), (10**12, 0.50, 2.50)],
@@ -152,8 +153,10 @@ def _call(api_key: str, model: str, prompt: str, use_search: bool, max_searches:
     """Mesaj gönder; web araması uzun sürüp cevap 'pause_turn' ile yarıda kalırsa devam ettir.
     Dönen sözlükte tüm turların içerik blokları birleştirilmiş olarak 'content' alanındadır."""
     messages = [{"role": "user", "content": prompt}]
-    body = {"model": model, "max_tokens": 16000, "messages": messages,
+    body = {"model": model, "max_tokens": 20000, "messages": messages,
             "output_config": {"effort": EFFORT}}
+    if THINKING:
+        body["thinking"] = {"type": THINKING}
     if use_search:
         body["tools"] = [{"type": "web_search_20250305", "name": "web_search", "max_uses": max_searches}]
     all_blocks, usage, cost = [], {}, 0.0
@@ -227,10 +230,11 @@ def fit_counts(c: dict) -> dict:
 
 
 def generate(pick: dict, api_key: str, today: date, model: str = "claude-haiku-5-5",
-             use_search: bool = True, max_searches: int = 4, effort: str = "medium") -> tuple[dict, dict]:
+             use_search: bool = True, max_searches: int = 4, effort: str = "medium",
+             thinking: str | None = "disabled") -> tuple[dict, dict]:
     """(içerik, kullanım bilgisi) döndürür."""
-    global EFFORT
-    EFFORT = effort
+    global EFFORT, THINKING
+    EFFORT, THINKING = effort, thinking
     prompt = build_prompt(pick, today)
     try:
         resp = _call(api_key, model, prompt, use_search, max_searches)
