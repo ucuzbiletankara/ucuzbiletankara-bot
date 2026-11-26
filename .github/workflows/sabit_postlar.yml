@@ -1,0 +1,43 @@
+name: Sabit postları yayınla
+
+# sabit/ klasöründeki 3 postu (Nasıl kullanılır → Neden biz → Biz kimiz) sırayla paylaşır.
+# Tetikleme: elle ya da onay/sabit_yayinla.txt değişince. Paylaşılanlar tekrar paylaşılmaz.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "onay/sabit_yayinla.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gunluk-post
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests PyYAML Pillow
+      - name: Instagram'a paylaş
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python -m bot.publish_sabit
+      - name: Sonucu kaydet
+        if: always()
+        run: |
+          [ -f onay/sabit_sonuc.json ] || exit 0
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add onay/sabit_sonuc.json
+          git commit -q -m "Sabit post yayın kaydı [skip ci]" || exit 0
+          git pull -q --rebase origin main
+          git push -q origin HEAD:main
