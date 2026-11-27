@@ -27,17 +27,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Aynı gün ikinci kez paylaşma (ör. elle tetiklenip sonra zamanlanmış iş de gelirse).
+      # Zamanlanmış işin checkout'u eski commit'te kalabildiği için main'in son hâline bakılır.
+      - name: 0) Bugün zaten paylaşıldı mı?
+        id: bugun
+        run: |
+          git fetch -q origin main
+          TODAY=$(TZ=Europe/Istanbul date +%F)
+          if git show origin/main:data/history.json 2>/dev/null | python3 -c "import json,sys; h=json.load(sys.stdin); sys.exit(0 if any(str(e.get('date','')).startswith('$TODAY') for e in h) else 1)"; then
+            echo "Bugün ($TODAY) zaten paylaşım var; atlanıyor." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/setup-python@v5
+        if: steps.bugun.outputs.skip != 'true'
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Kütüphaneleri kur
+        if: steps.bugun.outputs.skip != 'true'
         run: |
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
 
       - name: Pixabay önbelleği (24 saat)
+        if: steps.bugun.outputs.skip != 'true'
         uses: actions/cache@v4
         with:
           path: .cache
@@ -45,6 +60,7 @@ jobs:
           restore-keys: pixabay-
 
       - name: 1) Fırsatları tara
+        if: steps.bugun.outputs.skip != 'true'
         env:
           TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
         run: |
@@ -52,6 +68,7 @@ jobs:
           python -m bot.scan 2>&1 | tee data/scan_log.txt
 
       - name: 2) Postu üret
+        if: steps.bugun.outputs.skip != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
@@ -60,6 +77,7 @@ jobs:
           python -m bot.post 2>&1 | tee data/post_log.txt
 
       - name: 3) Instagram'a paylaş
+        if: steps.bugun.outputs.skip != 'true'
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -69,7 +87,7 @@ jobs:
           python -m bot.publish $F 2>&1 | tee data/publish_log.txt
 
       - name: Paylaşım geçmişini kaydet
-        if: success()
+        if: success() && steps.bugun.outputs.skip != 'true'
         run: |
           if git diff --quiet data/history.json; then exit 0; fi
           git config user.name "github-actions"
@@ -80,7 +98,7 @@ jobs:
           git push -q origin HEAD:main
 
       - name: Önizlemeyi "onizleme" dalına yaz
-        if: always()
+        if: always() && steps.bugun.outputs.skip != 'true'
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
