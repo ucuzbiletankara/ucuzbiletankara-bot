@@ -5,7 +5,8 @@ name: Günlük post
 # Elle çalıştırmada "yayinla" işaretlenirse ayar kapalı olsa da paylaşır.
 on:
   schedule:
-    - cron: "7 16 * * *"
+    - cron: "7 16 * * *"     # 19:07 TR
+    - cron: "37 17 * * *"    # 20:37 TR yedek: GitHub zamanlayıcısı ilkini geciktirir/atlarsa. Aynı gün paylaşım varsa atlanır.
   workflow_dispatch:
     inputs:
       yayinla:
