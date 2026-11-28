@@ -176,7 +176,8 @@ def trim_caption(caption: str) -> str:
 def record_history(pick: dict, result: dict) -> None:
     p = config.DATA_DIR / "history.json"
     hist = json.loads(p.read_text(encoding="utf-8")) if p.exists() else []
-    hist.append({"date": datetime.now(TR_TZ).date().isoformat(), "city": pick["city"],
+    now = datetime.now(TR_TZ)
+    hist.append({"date": now.date().isoformat(), "time": now.isoformat(timespec="minutes"), "city": pick["city"],
                  "country": pick.get("country"), "price": pick.get("price"),
                  "out_date": pick.get("out_date"), "media_id": result.get("media_id"),
                  "permalink": result.get("permalink")})

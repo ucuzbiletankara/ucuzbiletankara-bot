@@ -13,6 +13,10 @@ on:
         description: "Instagram'a paylaş (ayar kapalı olsa bile)"
         type: boolean
         default: false
+      kontrolu_atla:
+        description: "Aynı gün / 18 saat kontrolünü atla (bilerek ikinci post için)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -28,17 +32,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Aynı gün ikinci kez paylaşma (ör. elle tetiklenip sonra zamanlanmış iş de gelirse).
+      # Gecikmiş zamanlanmış işler ve çift paylaşım için kontrol: scripts/gunluk_kontrol.py.
       # Zamanlanmış işin checkout'u eski commit'te kalabildiği için main'in son hâline bakılır.
-      - name: 0) Bugün zaten paylaşıldı mı?
+      - name: 0) Bu çalıştırma paylaşmalı mı?
         id: bugun
         run: |
           git fetch -q origin main
-          TODAY=$(TZ=Europe/Istanbul date +%F)
-          if git show origin/main:data/history.json 2>/dev/null | python3 -c "import json,sys; h=json.load(sys.stdin); sys.exit(0 if any(str(e.get('date','')).startswith('$TODAY') for e in h) else 1)"; then
-            echo "Bugün ($TODAY) zaten paylaşım var; atlanıyor." | tee -a "$GITHUB_STEP_SUMMARY"
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-          fi
+          git show origin/main:data/history.json > /tmp/history.json 2>/dev/null || echo "[]" > /tmp/history.json
+          git show origin/main:scripts/gunluk_kontrol.py > /tmp/gunluk_kontrol.py
+          R=$(python3 /tmp/gunluk_kontrol.py /tmp/history.json "${{ github.event_name }}" 2>/tmp/neden.txt)
+          cat /tmp/neden.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          if [ "${{ inputs.kontrolu_atla }}" = "true" ]; then echo "Kontrol elle atlandı." | tee -a "$GITHUB_STEP_SUMMARY"; exit 0; fi
+          if [ "$R" = "skip" ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; fi
 
       - uses: actions/setup-python@v5
         if: steps.bugun.outputs.skip != 'true'
