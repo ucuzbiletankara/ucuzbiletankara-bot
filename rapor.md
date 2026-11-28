@@ -1,0 +1,66 @@
+## Post önizleme – Londra (2026-11-28)
+
+- Uçuş: ESB → STN · 2027-02-13 → 2027-02-18 · Pegasus · 7531 TL · mod: firsat
+- Fotoğraf: 17/17 bulundu
+- Claude: model claude-haiku-5-5 · tahmini maliyet 0.0384 $ (aylık ~1.15 $) · web araması 3 · en büyük istek 60905 token
+- Ham kullanım: {'input_tokens': 60905, 'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'output_tokens': 4695, 'web_searches': 3, 'max_prompt_tokens': 60905, 'estimated_cost_usd': 0.0384}
+- Taşma: yok
+- eSIM notu: yok
+- Reklam/tanıtım bildirimi: Tanıtım · Aviasales: profildeki bilet linki satış ortaklığı (komisyon) linkidir.
+
+### Caption
+```
+Ankara Esenboğa → Londra Stansted, aktarmasız, 7.531 TL'den başlayan fiyatla!
+
+13 Şubat 2027'de Pegasus PC 1691 ile 06:20'de Ankara'dan kalkıp 07:40'ta Londra'ya iniyorsun. Dönüş 18 Şubat'ta 10:45'te kalkış, 17:40'ta Ankara'ya varış. Gidiş-dönüş, aktarmasız ve kişi başı.
+
+Şubat ortası Londra'da yarıyıl tatili ve Sevgililer Günü haftası, kalabalık ama uygun fiyatlı bir kaçış için iyi bir zaman.
+
+Kaçırmaman gerekenler:
+📍 Natural History Museum ve Science Museum ücretsiz
+🐟 Borough Market'te öğle yemeği
+🌆 Sky Garden manzarası için önceden rezervasyon
+🚆 Stansted'den şehre yaklaşık 48 dakikada tren
+
+Bu uçuşu kaydet, arkadaşınla paylaş; Londra planın başlasın.
+
+Bilet linki profilde.
+
+Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir.
+
+Fotoğraflar: Pixabay, Wikimedia Commons (Ank Kumar / Wikimedia, CC BY-SA 4.0; Kunal Agarwal / Wikimedia, CC BY-SA 4.0; P L Chadwick / Wikimedia, CC BY-SA 2.0; Vintage Fan 5678 / Wikimedia, CC BY-SA 4.0; grassrootsgroundswell / Wikimedia, CC BY 2.0)
+
+Tanıtım · Aviasales: profildeki bilet linki satış ortaklığı (komisyon) linkidir.
+
+#reklam #londra #london #ankara #ankaradanuçuş #seyahat #gezi #ucuzbilet #yurtdışıgezi #ingiltere #londratatili #travel #londontravel #uygunfiyatlıuçuş #aktarmasız
+```
+
+### Fotoğraf günlüğü
+- cover: Pixabay 'london winter street' → https://pixabay.com/photos/kids-cycling-outdoor-fun-bicycle-1813138/
+- why_now: Wikimedia 'london valentine's day' → File:St. Pancras Station, London St. Valentine's Day.jpg
+- sights_1_0: Pixabay 'natural history museum london' → https://pixabay.com/photos/natural-history-museum-london-2203648/
+- sights_1_1: Wikimedia 'science museum london' → File:London Science Museum, London (Ank Kumar) 01.jpg
+- sights_1_2: Pixabay 'tate modern london' → https://pixabay.com/photos/london-tate-modern-gallery-stairs-2186349/
+- sights_1_3: Pixabay 'sky garden london' → https://pixabay.com/photos/london-palace-architecture-tourism-8835826/
+- sights_2_0: Pixabay 'westminster abbey london' → https://pixabay.com/photos/london-bus-yellow-red-westminster-3582649/
+- sights_2_1: Pixabay 'tower bridge london' → https://pixabay.com/photos/london-bridge-towers-tower-bridge-2324875/
+- sights_2_2: Pixabay 'borough market london' → https://pixabay.com/photos/blue-sky-borough-market-clock-tower-3822975/
+- sights_2_3: Pixabay 'covent garden piazza' → https://pixabay.com/photos/london-covent-garden-urban-landscape-1750934/
+- food_0: Pixabay 'fish and chips' → https://pixabay.com/photos/fish-and-chip-fried-fish-chip-3039746/
+- food_1: Pixabay 'full english breakfast' → https://pixabay.com/photos/english-breakfast-toast-tea-food-2421038/
+- food_2: Pixabay 'sunday roast dinner' → https://pixabay.com/photos/roast-pork-roast-crust-4582040/
+- food_3: Pixabay 'meat pie london' → https://pixabay.com/photos/ground-meat-meat-food-minced-1747910/
+- eat: Wikimedia 'borough market food' → File:William Shakespeare Street Art Wall Mural in 'Borough Food Market' in London.jpg
+- stay: Wikimedia 'london hotel room' → File:Edition London Hotel Room.jpg
+- transport: Wikimedia 'London tram' → File:London Tramlink Stadler tram no. 2554 entering Therapia Lane tram stop, Croydon (geograph 3289793).jpg
+
+### Doğrulama kaynakları
+- https://londondrum.com/events/?m=february
+- https://www.london-theatreland.co.uk/dates/2027/02/category/special-performance
+- https://londoncitydirectory.co.uk/london-events-calendar/
+- https://www.designmynight.com/london/whats-on/best-events-in-february-in-london
+- https://www.stanstedexpress.com/travel-information/timetables
+- https://www.stanstedexpress.com/travel-information/live-departures
+- https://www.tate.org.uk/whats-on/tate-modern/monet
+- https://www.stanstedairport.com/getting-to-and-from/by-stansted-express/
+- https://www.stanstedairport.com/getting-to-and-from/by-train/

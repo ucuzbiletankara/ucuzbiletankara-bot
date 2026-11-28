@@ -1,0 +1,392 @@
+{
+  "pick": {
+    "city": "LON",
+    "city_name": "Londra",
+    "country": "GB",
+    "format": "rt",
+    "out_date": "2027-02-13",
+    "ret_date": "2027-02-18",
+    "nights": 5,
+    "price": 7531,
+    "one_way_price": 3928,
+    "median_one_way": 6242,
+    "discount": 0.397,
+    "samples": 20,
+    "airline": "PC",
+    "airline_name": "Pegasus",
+    "origin_airport": "ESB",
+    "destination_airport": "STN",
+    "duration_min": 260,
+    "season": null,
+    "holidays": [],
+    "score": 44.7,
+    "link": "https://www.aviasales.com/search/ESB1302LON18021?t=PC18024996001802504400000260ESBSTN18029475001802972400000235STNESB_bb2ebb4be22d5c2a3cd6703e8227f28e_12230&search_date=21112026&expected_price_uuid=01a1ff26-24fb-8031-2689-da8c1aeea052&static_fare_key=TY%7CP1%7CH0%7CL0%7CCH0%7CR0%7CTBC0&itinerary_key=qAxUVRREwKTFUtB2HSkt3A&origin_airports=0&destination_airports=1&expected_price_source=share&expected_price_currency=try&expected_price=7531",
+    "notes": [],
+    "flight_number": "PC 1691",
+    "out_dep_time": "06:20",
+    "out_arr_time": "07:40",
+    "ret_dep_time": "10:45",
+    "ret_arr_time": "17:40",
+    "mode": "firsat"
+  },
+  "content": {
+    "airport_name": "Londra Stansted",
+    "city_en": "London",
+    "cover": {
+      "subtitle": "Şubat'ta Londra, aktarmasız",
+      "photo_query": "london winter street"
+    },
+    "why_now": {
+      "title": "Şubat ortası Londra",
+      "subtitle": "Yarıyıl tatili ve Sevgililer Günü haftası",
+      "photo_query": "london valentine's day",
+      "photo_label": "Londra Şubat 2027",
+      "rows": [
+        {
+          "name": "Sevgililer Günü",
+          "detail": "14 Şubat 2027, Pazar"
+        },
+        {
+          "name": "Yarıyıl tatili",
+          "detail": "15–19 Şubat 2027, müzeler dolu"
+        },
+        {
+          "name": "Kış fiyatları",
+          "detail": "Yaz sezonuna göre daha uygun"
+        },
+        {
+          "name": "Gün ışığı",
+          "detail": "Kış ortası, sakin caddeler"
+        }
+      ],
+      "tip": "Yarıyıl haftası kalabalık olur; müzeye erken git, bilet al."
+    },
+    "sights_1": {
+      "title": "Müzeler ve sanat",
+      "items": [
+        {
+          "name": "Natural History Museum",
+          "desc": "Güney Kensington'da, giriş ücretsiz. Dinozor galerisi ve dev iskelet sergisi ailelerin favorisi. Yarıyıl haftasında sıraya erken gir.",
+          "photo_query": "natural history museum london"
+        },
+        {
+          "name": "Science Museum",
+          "desc": "Natural History Museum'un hemen yanında, ücretsiz giriş. Uzay ve tıp bölümleri çocuklar için ideal. Kafeleri öğleden önce boşalır.",
+          "photo_query": "science museum london"
+        },
+        {
+          "name": "Tate Modern",
+          "desc": "Thames kıyısında, Bankside'ta. Monet sergisi 25 Şubat'ta açılır, seyahatinden sonra; ana koleksiyon ücretsiz, rezervasyonu kaçırma.",
+          "photo_query": "tate modern london"
+        },
+        {
+          "name": "Sky Garden",
+          "desc": "Walkie-Talkie binasının üst katında, Londra'nın en iyi manzaralarından biri. Girişi önceden rezervasyonla yapılır, hava açık olursa keyfi artar.",
+          "photo_query": "sky garden london"
+        }
+      ]
+    },
+    "sights_2": {
+      "title": "Tarihi Londra",
+      "items": [
+        {
+          "name": "Westminster Abbey",
+          "desc": "Kraliyet ayinlerinin yapıldığı tarihi kilise. Ziyaret için önceden bilet almak, yoğun günlerde kuyruğu azaltır. Girişte kısa bir bekleme olur.",
+          "photo_query": "westminster abbey london"
+        },
+        {
+          "name": "Tower Bridge",
+          "desc": "Thames üzerindeki ikonik asma köprü. Cam geçitli üst katı ziyaret edilebilir, Tower of London ile aynı günde gezilmesi rahat olur.",
+          "photo_query": "tower bridge london"
+        },
+        {
+          "name": "Borough Market",
+          "desc": "Londra'nın köklü gıda pazarı, London Bridge yakınında. Hafta içi öğle saatleri kalabalıktır; sabah erken gitmek daha rahat olur.",
+          "photo_query": "borough market london"
+        },
+        {
+          "name": "Covent Garden",
+          "desc": "Piazza ve sokak sanatçılarıyla bilinen meydan. Tiyatro bölgesine yakın, akşam yürüyüşü için iyi bir durak olur.",
+          "photo_query": "covent garden piazza"
+        }
+      ]
+    },
+    "food": {
+      "title": "Londra'nın tadı",
+      "items": [
+        {
+          "name": "Fish and chips",
+          "desc": "Kalın kesilmiş patates ve çıtır beyaz balık. Kıyıdaki kasaplar ve pub'lar klasik sunumu yapar. Sosla birlikte servis edilir.",
+          "photo_query": "fish and chips"
+        },
+        {
+          "name": "Full English",
+          "desc": "Kahvaltı tabağı: yumurta, fasulye, mantar ve domates. Çoğu kafede sabah saatlerinde servis edilir, porsiyonlar büyüktür.",
+          "photo_query": "full english breakfast"
+        },
+        {
+          "name": "Sunday roast",
+          "desc": "Haftasonu fırın etli öğün, yanında Yorkshire pudding ve sebze. Pazar günleri pub'larda yoğun olur, rezervasyon yap.",
+          "photo_query": "sunday roast dinner"
+        },
+        {
+          "name": "Meat pie",
+          "desc": "Et ve soslu iç harçlı hamur kabı, sokak ve pub menülerinde yaygın. Yanında genelde bezelye püresi ile servis edilir.",
+          "photo_query": "meat pie london"
+        }
+      ],
+      "note_title": "Domuz ve alkol",
+      "note": "Full English'te domuz eti, bazı pub yemeklerinde alkol bulunabilir. Menüde 'pork' ve 'alcohol' yazan yerlere dikkat et."
+    },
+    "eat": {
+      "title": "Masaya otur",
+      "photo_query": "borough market food",
+      "items": [
+        {
+          "tag": "Pazar",
+          "name": "Borough Market",
+          "desc": "Tarihi gıda pazarı, çeşitli street food tezgâhları"
+        },
+        {
+          "tag": "Pub",
+          "name": "Pub klasikleri",
+          "desc": "Fish and chips ve Sunday roast için ideal"
+        },
+        {
+          "tag": "Kafe",
+          "name": "Full English kafeleri",
+          "desc": "Sabah kahvaltısı için yoğun saatte erken gir"
+        },
+        {
+          "tag": "Tatlı",
+          "name": "Covent Garden çevresi",
+          "desc": "Akşam tatlı ve kahve durağı için iyi"
+        }
+      ],
+      "tip": "Pazar günleri pub'lar dolar; öğle yemeğini önceden planla."
+    },
+    "stay": {
+      "title": "Hangi semtte kalmalı?",
+      "photo_query": "london hotel room",
+      "items": [
+        {
+          "badge": "1",
+          "name": "Merkez",
+          "desc": "Westminster ve Covent Garden'a yürüme mesafesi"
+        },
+        {
+          "badge": "2",
+          "name": "South Bank",
+          "desc": "Thames kıyısı, Tate Modern ve Borough'a yakın"
+        },
+        {
+          "badge": "3",
+          "name": "King's Cross",
+          "desc": "Tren bağlantısı güçlü, bütçe dostu seçenekler"
+        },
+        {
+          "badge": "4",
+          "name": "Shoreditch",
+          "desc": "Genç ve canlı, kafe ve galeri sokakları"
+        }
+      ],
+      "footnote": "Tren ile gidiş için King's Cross pratik olur."
+    },
+    "transport": {
+      "title": "Havalimanından şehre",
+      "photo_query": "stansted express train",
+      "cards": [
+        {
+          "label": "En hızlı",
+          "name": "Tren",
+          "desc": "Stansted Express, Liverpool Street'e yaklaşık 48 dk"
+        },
+        {
+          "label": "Gece",
+          "name": "Otobüs",
+          "desc": "National Express gece seferleri; gece uçuşu için"
+        },
+        {
+          "label": "Kapı kapı",
+          "name": "Taksi",
+          "desc": "Rahat ama trafiğe bağlı, süre değişkendir"
+        }
+      ],
+      "city_items": [
+        {
+          "bold": "Tren saatleri",
+          "text": "Stansted Express her 15 dakikada bir, ilk sefer yaklaşık 05:30"
+        },
+        {
+          "bold": "Metro bağlantısı",
+          "text": "Liverpool Street'te Central ve Circle hatlarına geçebilirsin"
+        }
+      ]
+    },
+    "tips": {
+      "title": "Kaçırma, bunları bil",
+      "items": [
+        {
+          "title": "Vize",
+          "text": "Türk vatandaşları için İngiltere vizesi gerekir; randevuyu erken al."
+        },
+        {
+          "title": "Bütçe",
+          "text": "Müzelerin çoğu ücretsiz; Tate ve Sky Garden için bilet öncesi bak."
+        },
+        {
+          "title": "Kart",
+          "text": "Londra'da ulaşımda temassız kart en pratik yöntemdir."
+        },
+        {
+          "title": "Kıyafet",
+          "text": "Şubat ayında yağmur ihtimaline karşı kat kat giyin."
+        },
+        {
+          "title": "Metro",
+          "text": "Tube kapalı günlerine karşı harita uygulamasını kontrol et."
+        },
+        {
+          "title": "Tren grevi",
+          "text": "Şubat'ta tren grevi uyarısı var; seyahat öncesi durumu kontrol et."
+        }
+      ]
+    },
+    "closing": {
+      "title": "Uçuşu kaçırma",
+      "subtitle": "Bilet linki profilde, kaydet ve gönder"
+    },
+    "caption": "Ankara Esenboğa → Londra Stansted, aktarmasız, 7.531 TL'den başlayan fiyatla!\n\n13 Şubat 2027'de Pegasus PC 1691 ile 06:20'de Ankara'dan kalkıp 07:40'ta Londra'ya iniyorsun. Dönüş 18 Şubat'ta 10:45'te kalkış, 17:40'ta Ankara'ya varış. Gidiş-dönüş, aktarmasız ve kişi başı.\n\nŞubat ortası Londra'da yarıyıl tatili ve Sevgililer Günü haftası, kalabalık ama uygun fiyatlı bir kaçış için iyi bir zaman.\n\nKaçırmaman gerekenler:\n📍 Natural History Museum ve Science Museum ücretsiz\n🐟 Borough Market'te öğle yemeği\n🌆 Sky Garden manzarası için önceden rezervasyon\n🚆 Stansted'den şehre yaklaşık 48 dakikada tren\n\nBu uçuşu kaydet, arkadaşınla paylaş; Londra planın başlasın.\n\nBilet linki profilde.\n\nFiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir.",
+    "hashtags": [
+      "londra",
+      "london",
+      "ankara",
+      "ankaradanuçuş",
+      "seyahat",
+      "gezi",
+      "ucuzbilet",
+      "yurtdışıgezi",
+      "ingiltere",
+      "londratatili",
+      "travel",
+      "londontravel",
+      "uygunfiyatlıuçuş",
+      "aktarmasız"
+    ],
+    "sources": [
+      "https://londondrum.com/events/?m=february",
+      "https://www.london-theatreland.co.uk/dates/2027/02/category/special-performance",
+      "https://londoncitydirectory.co.uk/london-events-calendar/",
+      "https://www.designmynight.com/london/whats-on/best-events-in-february-in-london",
+      "https://www.stanstedexpress.com/travel-information/timetables",
+      "https://www.stanstedexpress.com/travel-information/live-departures",
+      "https://www.tate.org.uk/whats-on/tate-modern/monet",
+      "https://www.stanstedairport.com/getting-to-and-from/by-stansted-express/",
+      "https://www.stanstedairport.com/getting-to-and-from/by-train/"
+    ],
+    "disclosure_badge": "Tanıtım · Aviasales"
+  },
+  "photos": {
+    "cover": {
+      "file": "cover.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/kids-cycling-outdoor-fun-bicycle-1813138/"
+    },
+    "why_now": {
+      "file": "why_now.jpg",
+      "credit": "grassrootsgroundswell / Wikimedia, CC BY 2.0",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/6/63/St._Pancras_Station%2C_London_St._Valentine%27s_Day.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    "sights_1_0": {
+      "file": "sights_1_0.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/natural-history-museum-london-2203648/"
+    },
+    "sights_1_1": {
+      "file": "sights_1_1.jpg",
+      "credit": "Ank Kumar / Wikimedia, CC BY-SA 4.0",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/3/38/London_Science_Museum%2C_London_%28Ank_Kumar%29_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    },
+    "sights_1_2": {
+      "file": "sights_1_2.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/london-tate-modern-gallery-stairs-2186349/"
+    },
+    "sights_1_3": {
+      "file": "sights_1_3.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/london-palace-architecture-tourism-8835826/"
+    },
+    "sights_2_0": {
+      "file": "sights_2_0.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/london-bus-yellow-red-westminster-3582649/"
+    },
+    "sights_2_1": {
+      "file": "sights_2_1.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/london-bridge-towers-tower-bridge-2324875/"
+    },
+    "sights_2_2": {
+      "file": "sights_2_2.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/blue-sky-borough-market-clock-tower-3822975/"
+    },
+    "sights_2_3": {
+      "file": "sights_2_3.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/london-covent-garden-urban-landscape-1750934/"
+    },
+    "food_0": {
+      "file": "food_0.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/fish-and-chip-fried-fish-chip-3039746/"
+    },
+    "food_1": {
+      "file": "food_1.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/english-breakfast-toast-tea-food-2421038/"
+    },
+    "food_2": {
+      "file": "food_2.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/roast-pork-roast-crust-4582040/"
+    },
+    "food_3": {
+      "file": "food_3.jpg",
+      "credit": null,
+      "source": "https://pixabay.com/photos/ground-meat-meat-food-minced-1747910/"
+    },
+    "eat": {
+      "file": "eat.jpg",
+      "credit": "Vintage Fan 5678 / Wikimedia, CC BY-SA 4.0",
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/William_Shakespeare_Street_Art_Wall_Mural_in_%27Borough_Food_Market%27_in_London.jpg/1920px-William_Shakespeare_Street_Art_Wall_Mural_in_%27Borough_Food_Market%27_in_London.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    "stay": {
+      "file": "stay.jpg",
+      "credit": "Kunal Agarwal / Wikimedia, CC BY-SA 4.0",
+      "source": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Edition_London_Hotel_Room.jpg/1920px-Edition_London_Hotel_Room.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail"
+    },
+    "transport": {
+      "file": "transport.jpg",
+      "credit": "P L Chadwick / Wikimedia, CC BY-SA 2.0",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/f/fc/London_Tramlink_Stadler_tram_no._2554_entering_Therapia_Lane_tram_stop%2C_Croydon_%28geograph_3289793%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled"
+    }
+  },
+  "usage": {
+    "input_tokens": 60905,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "output_tokens": 4695,
+    "web_searches": 3,
+    "max_prompt_tokens": 60905,
+    "estimated_cost_usd": 0.0384
+  },
+  "disclosure": {
+    "word": "Tanıtım",
+    "brands": "Aviasales",
+    "line": "Tanıtım · Aviasales: profildeki bilet linki satış ortaklığı (komisyon) linkidir.",
+    "badge": "Tanıtım · Aviasales"
+  },
+  "generated_at": "2026-11-28T20:13+03:00"
+}

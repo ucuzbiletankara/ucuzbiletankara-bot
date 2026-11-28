@@ -1,0 +1,30 @@
+## Günün fırsatları – 2026-11-28
+
+Fiyat verisi gelen direkt nokta: 40; kurala uymadığı için elenen: 11; değerlendirilen fırsat: 23. API çağrısı: 420.
+
+| # | Rota | Format | Tarih | Fiyat | Normal tek yön | İndirim | Veri | Sezon / tatil | Havayolu | Puan |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | ESB → STN Londra | Gidiş-dönüş (5 gece) | 13 Şub → 18 Şub | **7.531 TL** | 6.242 TL | %40 | 20 | – | Pegasus | 44.7 |
+| 2 | ESB → BEG Belgrad | Tek yön | 28 Şub | **3.930 TL** | 6.483 TL | %39 | 25 | – | AJet | 44.4 |
+| 3 | ESB → CAI Kahire | Tek yön | 10 Şub | **3.268 TL** | 4.299 TL | %24 | 30 | Kışın güneşe kaçış | AJet | 44.0 |
+| 4 | ESB → GYD Bakü | Tek yön | 19 Şub | **3.077 TL** | 4.371 TL | %30 | 132 | – | AZAL | 34.6 |
+| 5 | ESB → BCN Barselona | Tek yön | 20 Ara | **3.783 TL** | 5.220 TL | %28 | 12 | Kışın güneşe kaçış | AJet | 32.5 |
+| 6 | ESB → VKO Moskova | Tek yön | 1 Mar | **5.214 TL** | 7.153 TL | %27 | 117 | – | AJet | 32.1 |
+| 7 | ESB → AMS Amsterdam | Tek yön | 7 Şub | **3.850 TL** | 11.894 TL | %27 | 4 | – | AJet | 32.1 |
+| 8 | ESB → BER Berlin | Tek yön | 23 Ara | **3.201 TL** | 5.866 TL | %45 | 16 | Noel pazarları | Pegasus | 30.4 |
+| 9 | ESB → FRA Frankfurt | Tek yön | 23 Ara | **3.140 TL** | 5.895 TL | %42 | 9 | Noel pazarları | SunExpress | 27.1 |
+| 10 | ESB → TBS Tiflis | Gidiş-dönüş (3 gece) | 7 Ara → 10 Ara | **6.017 TL** | 4.084 TL | %26 | 26 | – | AJet | 26.3 |
+| 11 | ESB → CDG Paris | Tek yön | 14 Ara | **5.356 TL** | 8.669 TL | %38 | 20 | – | Türk Hava Yolları | 23.2 |
+| 12 | ESB → MAD Madrid | Tek yön | 20 Ara | **4.273 TL** | 5.052 TL | %15 | 14 | Kışın güneşe kaçış | AJet | 20.4 |
+| 13 | ESB → DUS Düsseldorf | Tek yön | 18 Ara | **2.927 TL** | 6.632 TL | %39 | 7 | Noel pazarları | Pegasus | 19.1 |
+| 14 | ESB → SSH Şarm El-Şeyh | Tek yön | 31 Ara | **3.140 TL** | 3.554 TL | %10 | 9 | Kışın güneşe kaçış | Pegasus | -19.5 |
+| 15 | ESB → LIS Lizbon | Tek yön | 7 Oca | **5.552 TL** | 6.173 TL | %10 | 12 | Kışın güneşe kaçış | Pegasus | -19.9 |
+
+**Bugün paylaşılacak post:** Londra – 7.531 TL
+
+**Kurala uymadığı için elenen direkt noktalar:** ALA Almaty, AYT Antalya, BJV Bodrum, COV Mersin, DIY Diyarbakir, DLM Dalaman, IST Istanbul, IZM Izmir, MLX Malatya, NQZ Astana, TAS Tashkent
+
+**Önbellekte hiç direkt fiyat bulunamayanlar:** CPH Copenhagen, GVA Geneva, HAM Hamburg, RTM Rotterdam, SJJ Sarajevo, SKP Skopje, STO Stockholm, TIA Tirana, ZRH Zurich
+
+**Fiyat verisi az olduğu için değerlendirilemeyenler:** BRU Brussels, HAJ Hannover, TGD Podgorica
+
