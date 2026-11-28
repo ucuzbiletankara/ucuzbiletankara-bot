@@ -1,0 +1,47 @@
+{
+ "pick": {
+  "city_name": "Londra",
+  "price": 7531,
+  "format": "rt",
+  "out_date": "2027-02-13",
+  "ret_date": "2027-02-18",
+  "duration_min": 260
+ },
+ "metin": {
+  "A": [
+   "İstanbul aktarmalı Londra:",
+   "Gece kalk, İstanbul'a uç,",
+   "kapıda bekle, bekle, bekle… 😩"
+  ],
+  "B": [
+   "Esenboğa'dan direkt:",
+   "4 saat 20 dakika,",
+   "iner inmez Londra 😎"
+  ]
+ },
+ "klipler": {
+  "A": {
+   "query": "id:44647",
+   "id": 44647,
+   "tags": "yawn, woman, sleep, night, fatigue, depression, sleepy, face, mouth, open, person, morning, expression, portrait, cute, tired, wake, loose, rest, young, comfortable",
+   "url": "https://cdn.pixabay.com/video/2020/07/14/44647-439940300_large.mp4",
+   "w": 3840,
+   "h": 2160,
+   "page": "https://pixabay.com/videos/id-44647/",
+   "duration": 8,
+   "tiny": "https://cdn.pixabay.com/video/2020/07/14/44647-439940300_tiny.mp4"
+  },
+  "B": {
+   "query": "id:32938",
+   "id": 32938,
+   "tags": "dance, celebrate, fun, celebration, happy, dancing, girl, festive, colorful, laughing, young, people, person",
+   "url": "https://cdn.pixabay.com/video/2020/02/27/32938-395456384_large.mp4",
+   "w": 3840,
+   "h": 2160,
+   "page": "https://pixabay.com/videos/id-32938/",
+   "duration": 34,
+   "tiny": "https://cdn.pixabay.com/video/2020/02/27/32938-395456384_tiny.mp4"
+  }
+ },
+ "sure_sn": 9.7
+}
