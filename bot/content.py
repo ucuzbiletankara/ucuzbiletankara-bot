@@ -120,7 +120,7 @@ KURALLAR
 9. closing.subtitle'da "Bilet linki profilde" geçsin.{esim_rule}
 10. CAPTION: 900-1500 karakter. Yapı: güçlü ilk satır (rota + fiyat){'' if mode == 'firsat' else ' ("fırsat" kelimesini KULLANMA, "Ankara’dan direkt" dilini kullan)'};
     uçuş özeti (tarih, kalkış ve varış saati (yerel saat), havayolu, aktarmasız, fiyat, {'gidiş-dönüş' if rt else 'tek yön'}); neden şimdi (1-2 cümle);
-    3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kaydet/gönder çağrısı; "Bilet linki profilde";
+    3-4 maddelik "kaçırma" listesi (emoji madde imi olabilir); kısa kaydet çağrısı (GÖNDER çağrısını yazma, sistem ekliyor); "Bilet linki profilde";
     son satırda: "Fiyatlar paylaşım anında bulunan en düşük fiyattır, değişebilir." Bölümleri boş satırla
     (\\n\\n) ayır, liste maddelerini ayrı satırlara yaz; caption tek paragraf OLMASIN. Hashtag'leri caption'a
     yazma, ayrı listede ver (Türkçe ve İngilizce karışık, şehir + ankara + seyahat temalı).
@@ -347,6 +347,24 @@ def tidy_caption(cap: str) -> str:
     cap = re.sub(r"(?<=[.!?])\s+(?=[A-ZÇĞİÖŞÜ0-9📶✈️👉])", "\n\n", cap)       # cümleler ayrı paragraf
     cap = re.sub(r"(\S)\s*\n(- |• )", r"\1\n\2", cap)
     return re.sub(r"\n{3,}", "\n\n", cap)
+
+
+SEND_CTA = "✈️ Bu rotaya kiminle gidersin? Ona gönder."
+
+
+def apply_send_cta(content: dict) -> dict:
+    """Kullanıcı kararı (28 Kasım): her caption'da "kiminle gidersin? Ona gönder" çağrısı.
+    DM ile gönderim, takip etmeyenlere ulaşmada en güçlü sinyal. "Bilet linki profilde" satırının hemen üstüne."""
+    cap = content.get("caption", "")
+    if "kiminle gidersin" in cap.lower():
+        return content
+    lines = cap.rstrip().splitlines()
+    at = next((i for i, l in enumerate(lines) if "bilet linki profilde" in l.lower()), None)
+    if at is None:
+        at = next((i for i in range(len(lines) - 1, -1, -1) if lines[i].lower().startswith("fiyat")), len(lines))
+    lines[at:at] = [SEND_CTA, ""]
+    content["caption"] = "\n".join(lines)
+    return content
 
 
 def esim_for(settings: dict, pick: dict) -> dict | None:

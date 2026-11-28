@@ -13,7 +13,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from . import config
-from .content import apply_esim, tidy_caption, clean_ad_tags, disclosure_for, esim_for, generate, shorten_request
+from .content import apply_esim, apply_send_cta, tidy_caption, clean_ad_tags, disclosure_for, esim_for, generate, shorten_request
 from .photos import PhotoFinder, collect
 from .render import render_post, overflow_report
 
@@ -65,7 +65,7 @@ def main() -> None:
         (OUT / "claude_raw.json").write_text(
             json.dumps(content_mod.LAST_RAW, ensure_ascii=False, indent=1), encoding="utf-8")
 
-    content = apply_esim(content, esim)
+    content = apply_send_cta(apply_esim(content, esim))
     partner = (esim.get("closing_text") or None) if esim else None
 
     # 2) Fotoğraflar
@@ -79,7 +79,7 @@ def main() -> None:
     render_post(content, pick, photos, OUT, partner=partner)
     over = overflow_report(OUT)
     if over:
-        content = apply_esim(shorten_request(content, over, pick, api_key, model), esim)
+        content = apply_send_cta(apply_esim(shorten_request(content, over, pick, api_key, model), esim))
         from .content import request_cost, LAST_RAW
         usage["estimated_cost_usd"] = round(sum(request_cost(model, r.get("usage") or {}) for r in LAST_RAW), 4)
         render_post(content, pick, photos, OUT, partner=partner)
