@@ -80,14 +80,14 @@ def candidates(key: str, out: Path, per_query: int = 6):
     """Aday kareleri: her sorgudan ilk N video, ortadan bir kare; numaralı bir pano."""
     from PIL import Image, ImageDraw
     out.mkdir(parents=True, exist_ok=True)
-    rows = []
+    rows, seen = [], set()
     for seg, qs in QUERIES.items():
         for q in qs:
             n = 0
             for h in pixabay(q, key):
                 tags = {t.strip().lower() for t in h.get("tags", "").split(",")}
                 c = clip_info(h, q)
-                if not c or tags & BLOCK_TAGS or not c["tiny"] or h.get("duration", 0) < 5:
+                if not c or h["id"] in seen or tags & BLOCK_TAGS or not c["tiny"] or h.get("duration", 0) < 5:
                     continue
                 f = out / f"t_{h['id']}.mp4"
                 f.write_bytes(requests.get(c["tiny"], timeout=60).content)
@@ -95,6 +95,7 @@ def candidates(key: str, out: Path, per_query: int = 6):
                 subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(min(2, h["duration"] / 2)), "-i", str(f),
                                 "-frames:v", "1", "-vf", "scale=320:-2", str(jpg)], check=False)
                 f.unlink(missing_ok=True)
+                seen.add(h["id"])
                 if jpg.exists():
                     rows.append((seg, q, h["id"], jpg, h.get("tags", "")))
                     n += 1
