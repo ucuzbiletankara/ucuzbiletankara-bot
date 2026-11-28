@@ -61,6 +61,7 @@ class FakeClient:
 
 def main():
     tz = {c: "Europe/Vienna" for c in ["VIE", "BER"]} | {"DXB": "Asia/Dubai", "TBS": "Asia/Tbilisi", "ECN": "Asia/Nicosia"}
+    scan.load_history = lambda: []  # gerçek paylaşım geçmişi testi etkilemesin
     res = scan.run(FakeClient(), CITIES, today=TODAY, airports_tz=tz)
     codes = [d["city"] for d in res["deals"]]
     assert "JED" in res["excluded_by_rules"], "Cidde elenmeliydi"
