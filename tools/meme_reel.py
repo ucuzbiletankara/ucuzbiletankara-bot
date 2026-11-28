@@ -131,10 +131,19 @@ def pick_clip(seg: str, key: str, need: float, used: set) -> dict:
     raise SystemExit(f"{seg} için uygun video bulunamadı")
 
 
+VID_Y, VID_H = 700, 1020  # video alanı (klasik meme: üstte yazı, altta video)
+
+
 def overlay_html(lines: list[str]) -> str:
-    rows = "".join(f'<div class="t{" y big" if i == 0 else ""}">{l}</div>' for i, l in enumerate(lines))
-    return f'<!doctype html><html><head><meta charset="utf-8">{FONTS}<style>{CSS}</style></head><body>' \
-           f'<div class="brand">ucuzbilet<span>ankara</span></div><div class="box" style="top:300px">{rows}</div></body></html>'
+    head, rest = lines[0], " ".join(lines[1:])
+    return f"""<!doctype html><html><head><meta charset="utf-8">{FONTS}<style>{CSS}
+.m{{position:absolute;left:64px;right:64px;top:200px;height:{VID_Y - 240}px;display:flex;flex-direction:column;justify-content:flex-end;gap:18px;color:#111}}
+.h{{font-weight:900;font-size:84px;line-height:1.04;letter-spacing:-2px}}
+.r{{font-weight:600;font-size:62px;line-height:1.18}}
+.b{{position:absolute;left:64px;top:{VID_Y + VID_H + 34}px;font-family:'Space Grotesk';font-weight:700;font-size:34px;color:#0F1E33}}
+.b span{{background:#0F1E33;color:#FFC533;padding:0 8px;border-radius:6px;margin-left:2px}}</style></head><body>
+<div class="m"><div class="h">{head}</div><div class="r">{rest}</div></div>
+<div class="b">ucuzbilet<span>ankara</span></div></body></html>"""
 
 
 def card_html(p: dict) -> str:
@@ -187,16 +196,17 @@ def run(post_json: Path, out: Path):
         b.close()
     total = sum(SEG.values())
     music(out / "music.wav", total, bpm=112)
-    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},fps={FPS},setsar=1,"
-          "eq=brightness=-0.04:saturation=1.1")
+    vf = f"scale={W}:{VID_H}:force_original_aspect_ratio=increase,crop={W}:{VID_H},fps={FPS},setsar=1,eq=saturation=1.08"
     cmd = ["ffmpeg", "-y", "-loglevel", "error",
            "-ss", "0.5", "-t", str(SEG["A"]), "-i", str(out / "clip_A.mp4"),
            "-ss", "0.5", "-t", str(SEG["B"]), "-i", str(out / "clip_B.mp4"),
            "-loop", "1", "-t", str(SEG["C"]), "-i", str(out / "card.png"),
            "-i", str(out / "ov_A.png"), "-i", str(out / "ov_B.png"), "-i", str(out / "music.wav"),
+           "-f", "lavfi", "-t", str(SEG["A"]), "-i", f"color=c=white:s={W}x{H}:r={FPS}",
+           "-f", "lavfi", "-t", str(SEG["B"]), "-i", f"color=c=white:s={W}x{H}:r={FPS}",
            "-filter_complex",
-           f"[0:v]{vf}[a0];[a0][3:v]overlay=0:0[a];"
-           f"[1:v]{vf}[b0];[b0][4:v]overlay=0:0[b];"
+           f"[0:v]{vf}[a0];[6:v][a0]overlay=0:{VID_Y}:shortest=1[a1];[a1][3:v]overlay=0:0[a];"
+           f"[1:v]{vf}[b0];[7:v][b0]overlay=0:{VID_Y}:shortest=1[b1];[b1][4:v]overlay=0:0[b];"
            f"[2:v]fps={FPS},scale={W}:{H},setsar=1,zoompan=z='min(zoom+0.0006,1.04)':d=1:s={W}x{H}:fps={FPS}[c];"
            "[a][b][c]concat=n=3:v=1:a=0,format=yuv420p[v]",
            "-map", "[v]", "-map", "5:a", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
