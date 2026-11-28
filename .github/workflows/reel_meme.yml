@@ -4,6 +4,13 @@ name: Meme Reels (test)
 # Sonuç "reels-onizleme" dalına yazılır.
 on:
   workflow_dispatch:
+    inputs:
+      mod:
+        description: "uret (Reels üret) ya da aday (aday video panosu)"
+        default: uret
+      ids:
+        description: "Sabit videolar, ör. A:123,B:456 (boşsa otomatik seçer)"
+        default: ""
   push:
     branches: [main]
     paths:
@@ -35,7 +42,10 @@ jobs:
       - name: Reels üret
         env:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-        run: python tools/meme_reel.py /tmp/post/post.json /tmp/reel
+          MEME_IDS: ${{ inputs.ids }}
+        run: |
+          if [ "${{ inputs.mod }}" = "aday" ]; then python tools/meme_reel.py aday /tmp/reel
+          else python tools/meme_reel.py /tmp/post/post.json /tmp/reel; fi
       - name: Sonucu "reels-onizleme" dalına yaz
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

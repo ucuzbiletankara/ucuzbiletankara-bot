@@ -26,8 +26,8 @@ from reel import AY3, music, tl  # noqa: E402
 W, H, FPS = 1080, 1920, 30
 SEG = {"A": 3.5, "B": 3.0, "C": 3.2}
 QUERIES = {
-    "A": ["airport sleeping", "tired airport waiting", "airport waiting bored", "waiting airport night", "airport delay"],
-    "B": ["airplane takeoff", "airplane window clouds", "plane taking off sunset", "airplane flying"],
+    "A": ["yawning tired", "bored waiting", "sleeping chair", "tired man", "waiting clock", "airport waiting"],
+    "B": ["happy dance celebration", "woman celebrating", "happy travel woman", "airplane window view", "airplane sunset sky"],
 }
 BLOCK_TAGS = {"cartoon", "animation", "3d", "render", "military", "fighter", "jet fighter", "crash", "fire", "war"}
 
@@ -61,19 +61,72 @@ def pixabay(q: str, key: str) -> list[dict]:
     return r.json().get("hits", [])
 
 
+def clip_info(h: dict, q: str) -> dict | None:
+    v = h["videos"]
+    best = next((v[s] for s in ("large", "medium") if v.get(s, {}).get("url") and v[s].get("height", 0) >= 1080), None)
+    if not best:
+        return None
+    return {"query": q, "id": h["id"], "tags": h.get("tags"), "url": best["url"], "w": best["width"], "h": best["height"],
+            "page": h.get("pageURL"), "duration": h.get("duration"), "tiny": v.get("tiny", {}).get("url")}
+
+
+def by_id(vid: int, key: str) -> dict:
+    r = requests.get("https://pixabay.com/api/videos/", params={"key": key, "id": vid}, timeout=30)
+    r.raise_for_status()
+    return clip_info(r.json()["hits"][0], f"id:{vid}")
+
+
+def candidates(key: str, out: Path, per_query: int = 6):
+    """Aday kareleri: her sorgudan ilk N video, ortadan bir kare; numaralı bir pano."""
+    from PIL import Image, ImageDraw
+    out.mkdir(parents=True, exist_ok=True)
+    rows = []
+    for seg, qs in QUERIES.items():
+        for q in qs:
+            n = 0
+            for h in pixabay(q, key):
+                tags = {t.strip().lower() for t in h.get("tags", "").split(",")}
+                c = clip_info(h, q)
+                if not c or tags & BLOCK_TAGS or not c["tiny"] or h.get("duration", 0) < 5:
+                    continue
+                f = out / f"t_{h['id']}.mp4"
+                f.write_bytes(requests.get(c["tiny"], timeout=60).content)
+                jpg = out / f"t_{h['id']}.jpg"
+                subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", str(min(2, h["duration"] / 2)), "-i", str(f),
+                                "-frames:v", "1", "-vf", "scale=320:-2", str(jpg)], check=False)
+                f.unlink(missing_ok=True)
+                if jpg.exists():
+                    rows.append((seg, q, h["id"], jpg, h.get("tags", "")))
+                    n += 1
+                if n >= per_query:
+                    break
+    cols, tw, th = 6, 320, 210
+    sheet = Image.new("RGB", (cols * tw, ((len(rows) + cols - 1) // cols) * (th + 34)), "white")
+    d = ImageDraw.Draw(sheet)
+    for i, (seg, q, vid, jpg, tags) in enumerate(rows):
+        x, y = (i % cols) * tw, (i // cols) * (th + 34)
+        im = Image.open(jpg).convert("RGB"); im.thumbnail((tw, th)); sheet.paste(im, (x, y))
+        d.text((x + 4, y + th + 2), f"{seg} {vid} | {q}"[:48], fill="black")
+        d.text((x + 4, y + th + 16), tags[:48], fill="gray")
+        jpg.unlink()
+    sheet.save(out / "adaylar.jpg", quality=85)
+    (out / "adaylar.json").write_text(json.dumps([{"seg": r[0], "q": r[1], "id": r[2], "tags": r[4]} for r in rows], ensure_ascii=False, indent=1))
+
+
 def pick_clip(seg: str, key: str, need: float, used: set) -> dict:
+    forced = dict(x.split(":") for x in os.environ.get("MEME_IDS", "").split(",") if ":" in x)
+    if seg in forced:
+        return by_id(int(forced[seg]), key)
     for q in QUERIES[seg]:
         for h in pixabay(q, key):
             tags = {t.strip().lower() for t in h.get("tags", "").split(",")}
             if h["id"] in used or tags & BLOCK_TAGS or h.get("duration", 0) < need + 1:
                 continue
-            v = h["videos"]
-            best = next((v[s] for s in ("large", "medium") if v.get(s, {}).get("url") and v[s].get("height", 0) >= 1080), None)
-            if not best:
+            c = clip_info(h, q)
+            if not c:
                 continue
             used.add(h["id"])
-            return {"query": q, "id": h["id"], "tags": h.get("tags"), "url": best["url"], "w": best["width"], "h": best["height"],
-                    "page": h.get("pageURL"), "duration": h.get("duration")}
+            return c
     raise SystemExit(f"{seg} için uygun video bulunamadı")
 
 
@@ -160,4 +213,7 @@ def run(post_json: Path, out: Path):
 
 
 if __name__ == "__main__":
-    run(Path(sys.argv[1]), Path(sys.argv[2]))
+    if sys.argv[1] == "aday":
+        candidates(os.environ["PIXABAY_API_KEY"], Path(sys.argv[2]))
+    else:
+        run(Path(sys.argv[1]), Path(sys.argv[2]))
