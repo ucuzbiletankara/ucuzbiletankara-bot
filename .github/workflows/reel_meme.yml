@@ -1,0 +1,48 @@
+name: Meme Reels (test)
+
+# "Aktarma acısı" formatında örnek Reels üretir (paylaşmaz). Girdi: onizleme dalındaki son post.
+# Sonuç "reels-onizleme" dalına yazılır.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "tools/meme_reel.py"
+      - "tools/reel.py"
+      - ".github/workflows/reel_meme.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Kurulum
+        run: |
+          pip install requests numpy Pillow playwright
+          python -m playwright install --with-deps chromium
+          sudo apt-get install -y -q ffmpeg fonts-noto-color-emoji >/dev/null
+      - name: Son postun bilgisi
+        run: |
+          git fetch -q origin onizleme
+          mkdir -p /tmp/post && git show origin/onizleme:post.json > /tmp/post/post.json
+      - name: Reels üret
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: python tools/meme_reel.py /tmp/post/post.json /tmp/reel
+      - name: Sonucu "reels-onizleme" dalına yaz
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd /tmp/reel && rm -f *.html
+          git init -q -b reels-onizleme
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A && git commit -q -m "Meme Reels önizleme"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}" reels-onizleme
